@@ -1,3 +1,5 @@
+import copy
+
 class AFoperations:
 
     @staticmethod
@@ -61,4 +63,149 @@ class AFoperations:
                     if transicoes[1] in estados_mortos:
                         transicoes[1] = 'Erro'
 
-        return dict_newaf
+        # Criando os conjuntos equivalentes
+        F = {}
+        key_F = estados_aceitacao[0]
+        F[key_F] = []
+        for estados in estados_aceitacao:
+            if estados != key_F:
+                F[key_F].insert(len(F[key_F]), estados)
+
+        KF = {}
+        key_KF = None
+        for keys in dict_newaf.keys():
+            if keys not in estados_aceitacao and keys != 'Erro':
+                KF[keys] = []
+                key_KF = keys
+                break
+
+        for keys in dict_newaf.keys():
+            if keys not in estados_aceitacao and keys != 'Erro' and key_KF != keys:
+                KF[key_KF].insert(len(KF[key_KF]), keys)
+
+        KF['Erro'] = []
+
+        #print(F)
+        #print(KF)
+
+        # Separa os estados em classes de equivalencia
+        new_F = F.copy()   # Essas duas linhas nao são necessárias
+        new_KF = KF.copy() # Apagar depois
+        old_F = {}
+        old_KF = {}
+
+        while len(old_F.keys()) != len(new_F.keys()) or len(old_KF.keys()) != len(new_KF.keys()):
+            old_F = new_F.copy()
+            old_KF = new_KF.copy()
+
+            new_F = AFoperations.conjuntosEquivalentes(new_F, alfabeto, dict_newaf, old_F, old_KF)
+            new_KF = AFoperations.conjuntosEquivalentes(new_KF, alfabeto, dict_newaf, old_F, old_KF)
+
+        print(new_F)
+        print(new_KF)
+
+        # Cria AFD Minimo
+        dict_afmin = {}
+        AFoperations.afdminimo(new_F, dict_afmin, dict_newaf, new_F, new_KF)
+        AFoperations.afdminimo(new_KF, dict_afmin, dict_newaf, new_F, new_KF)
+
+        print(dict_afmin)
+        return dict_afmin
+
+    @staticmethod
+    def afdminimo(ce, dict_afmin, dict_newaf, new_F, new_KF):
+        for keys in ce.keys():
+            dict_afmin[keys] = []
+            for transicoes in dict_newaf[keys]:
+                for key in new_F.keys():
+                    if transicoes[1] in new_F[key] or transicoes[1] == key:
+                        dict_afmin[keys].insert(len(dict_afmin[keys]), [transicoes[0], key])
+                        break
+                for key in new_KF.keys():
+                    if transicoes[1] in new_KF[key] or transicoes[1] == key:
+                        dict_afmin[keys].insert(len(dict_afmin[keys]), [transicoes[0], key])
+                        break
+
+
+    @staticmethod
+    def conjuntosEquivalentes(conjunto, alfabeto, dict_newaf, F, KF):
+        new_conjunto = copy.deepcopy(conjunto)
+        estados_separados = []
+
+        if len(conjunto.keys()) >= 1:
+            for keys in conjunto.keys():
+                if not (len(conjunto[keys]) == 0):
+                    for estados in conjunto[keys]:
+                        if not (AFoperations.compare(keys, estados, alfabeto, dict_newaf, F, KF)):
+                            new_conjunto[estados] = []
+                            new_conjunto[keys].remove(estados)
+                            estados_separados.insert(len(estados_separados), estados)
+
+        ja_visitados = []
+        for key_1 in estados_separados:
+            ja_visitados.insert(len(ja_visitados), key_1)
+            for key_2 in estados_separados:
+                if key_2 not in ja_visitados:
+                    if not(AFoperations.compare(keys, estados, alfabeto, dict_newaf, F, KF)):
+                        new_conjunto[key_1].insert(len(new_conjunto[key_1]), key_2)
+                        del new_conjunto[key_2]
+
+        return new_conjunto
+
+    @staticmethod
+    def compare(key, keyCompare, alfabeto, dict_newaf, F, KF):
+        for char in range(len(alfabeto)):
+            key_1 = dict_newaf[key][char][1]
+            key_2 = dict_newaf[keyCompare][char][1]
+            if not(key_1 == key_2 or AFoperations.equivalencia(key_1, key_2, F, KF)):
+                return False
+        return True
+
+    # Verifica se está na mesma classe de equivalência
+    @staticmethod
+    def equivalencia(key, keyCompare, F, KF):
+        for keys in F.keys():
+            if (keyCompare in F[keys] or keyCompare == keys) and (key in F[keys] or key == keys):
+                return True
+
+        for keys in KF.keys():
+            if (keyCompare in KF[keys] or keyCompare == keys) and (key in KF[keys] or key == keys):
+                return True
+        return False
+
+    # Funciona - Guardado para backup
+    # while len(old_F.keys()) != len(new_F.keys()):
+    #     old_F = new_F.copy()
+    #     if len(F.keys()) == 1:
+    #         for keys in F.keys():
+    #             if not(len(F[keys]) == 0):
+    #                 for estados in F[keys]:
+    #                     if not(AFoperations.compare(keys, estados, alfabeto, dict_newaf, F, KF)):
+    #                         new_F[estados] = []
+    #                         new_F[keys].remove(estados)
+
+    # Cria AFD Minimo - Backup
+    # dict_afmin = {}
+    # for keys in new_F.keys():
+    #     dict_afmin[keys] = []
+    #     for transicoes in dict_newaf[keys]:
+    #         for key in new_F.keys():
+    #             if transicoes[1] in new_F[key] or transicoes[1] == key:
+    #                 dict_afmin[keys].insert(len(dict_afmin[keys]), [transicoes[0], key])
+    #                 break
+    #         for key in new_KF.keys():
+    #             if transicoes[1] in new_KF[key] or transicoes[1] == key:
+    #                 dict_afmin[keys].insert(len(dict_afmin[keys]), [transicoes[0], key])
+    #                 break
+    #
+    # for keys in new_KF.keys():
+    #     dict_afmin[keys] = []
+    #     for transicoes in dict_newaf[keys]:
+    #         for key in new_F.keys():
+    #             if transicoes[1] in new_F[key] or transicoes[1] == key:
+    #                 dict_afmin[keys].insert(len(dict_afmin[keys]), [transicoes[0], key])
+    #                 break
+    #         for key in new_KF.keys():
+    #             if transicoes[1] in new_KF[key] or transicoes[1] == key:
+    #                 dict_afmin[keys].insert(len(dict_afmin[keys]), [transicoes[0], key])
+    #                 break
