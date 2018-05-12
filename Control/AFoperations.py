@@ -5,8 +5,6 @@ class AFoperations:
     @staticmethod
     def minimizacao(dict_af, estados_aceitacao):
         dict_newaf = {}
-        alc_keys = [list(dict_af.keys())[0]]
-        ja_visitados = []
         estados_mortos = []
         alfabeto = []
 
@@ -22,75 +20,22 @@ class AFoperations:
             dict_newaf['Erro'].insert(len(dict_newaf['Erro']), [char, 'Erro'])
 
         # Explicitando estado de erro nos outros estados
-        for keys in dict_af.keys():
-            existe = False
-            for char in alfabeto:
-                for producoes in dict_af[keys]:
-                    if char in producoes:
-                        existe = True
-                if not existe:
-                    dict_af[keys].insert(alfabeto.index(char), [char, 'Erro'])
-                existe = False
+        AFoperations.explicitar_estados_mortos(dict_af, alfabeto)
 
         # Eliminacao de estados inalcancaveis e descobrindo os mortos
-        while len(alc_keys) != 0:
-            key = alc_keys[0]
-            ja_visitados.insert(len(ja_visitados), key)
-            count_dead = 0
-
-            # Verificando se é alcançável
-            dict_newaf[key] = dict_af[key]
-            for transicoes in dict_newaf[key]:
-                if transicoes[1] not in ja_visitados and transicoes[1] != 'Erro':
-                    alc_keys.insert(len(alc_keys), transicoes[1])
-                # Verificando se é morto
-                if (transicoes[1] == key and transicoes[1] not in estados_aceitacao) or transicoes[1] == 'Erro':
-                    count_dead += 1
-
-            if count_dead == len(alfabeto):
-                estados_mortos.insert(len(estados_mortos), key)
-
-            del alc_keys[0]
+        AFoperations.kill_unreachable_discover_dead(dict_newaf, dict_af, alfabeto, estados_aceitacao, estados_mortos)
 
         # Eliminando os estados mortos
-        for keys in estados_mortos:
-            dict_newaf.pop(keys)
-
-        # Substituindo estados mortos pelo estado de erro
-        for keys in dict_newaf.keys():
-            if keys != 'Erro':
-                for transicoes in dict_newaf[keys]:
-                    if transicoes[1] in estados_mortos:
-                        transicoes[1] = 'Erro'
+        AFoperations.kill_dead_states(estados_mortos, dict_newaf)
 
         # Criando os conjuntos equivalentes
-        F = {}
-        key_F = estados_aceitacao[0]
-        F[key_F] = []
-        for estados in estados_aceitacao:
-            if estados != key_F:
-                F[key_F].insert(len(F[key_F]), estados)
-
-        KF = {}
-        key_KF = None
-        for keys in dict_newaf.keys():
-            if keys not in estados_aceitacao and keys != 'Erro':
-                KF[keys] = []
-                key_KF = keys
-                break
-
-        for keys in dict_newaf.keys():
-            if keys not in estados_aceitacao and keys != 'Erro' and key_KF != keys:
-                KF[key_KF].insert(len(KF[key_KF]), keys)
+        F, KF = AFoperations.create_equivalent_sets(dict_newaf, estados_aceitacao)
 
         KF['Erro'] = []
 
-        #print(F)
-        #print(KF)
-
         # Separa os estados em classes de equivalencia
-        new_F = F.copy()   # Essas duas linhas nao são necessárias
-        new_KF = KF.copy() # Apagar depois
+        new_F = F.copy()
+        new_KF = KF.copy()
         old_F = {}
         old_KF = {}
 
@@ -101,15 +46,11 @@ class AFoperations:
             new_F = AFoperations.conjuntosEquivalentes(new_F, alfabeto, dict_newaf, old_F, old_KF)
             new_KF = AFoperations.conjuntosEquivalentes(new_KF, alfabeto, dict_newaf, old_F, old_KF)
 
-        print(new_F)
-        print(new_KF)
-
         # Cria AFD Minimo
         dict_afmin = {}
         AFoperations.afdminimo(new_F, dict_afmin, dict_newaf, new_F, new_KF)
         AFoperations.afdminimo(new_KF, dict_afmin, dict_newaf, new_F, new_KF)
 
-        print(dict_afmin)
         return dict_afmin
 
     @staticmethod
@@ -172,6 +113,76 @@ class AFoperations:
             if (keyCompare in KF[keys] or keyCompare == keys) and (key in KF[keys] or key == keys):
                 return True
         return False
+
+    @staticmethod
+    def explicitar_estados_mortos(dict_af, alfabeto):
+        for keys in dict_af.keys():
+            existe = False
+            for char in alfabeto:
+                for producoes in dict_af[keys]:
+                    if char in producoes:
+                        existe = True
+                if not existe:
+                    dict_af[keys].insert(alfabeto.index(char), [char, 'Erro'])
+                existe = False
+
+    @staticmethod
+    def kill_unreachable_discover_dead(dict_newaf, dict_af, alfabeto, estados_aceitacao, estados_mortos):
+        alc_keys = [list(dict_af.keys())[0]]
+        ja_visitados = []
+        while len(alc_keys) != 0:
+            key = alc_keys[0]
+            ja_visitados.insert(len(ja_visitados), key)
+            count_dead = 0
+
+            # Verificando se é alcançável
+            dict_newaf[key] = dict_af[key]
+            for transicoes in dict_newaf[key]:
+                if transicoes[1] not in ja_visitados and transicoes[1] != 'Erro':
+                    alc_keys.insert(len(alc_keys), transicoes[1])
+                # Verificando se é morto
+                if (transicoes[1] == key and transicoes[1] not in estados_aceitacao) or transicoes[1] == 'Erro':
+                    count_dead += 1
+
+            if count_dead == len(alfabeto):
+                estados_mortos.insert(len(estados_mortos), key)
+
+            del alc_keys[0]
+
+    @staticmethod
+    def kill_dead_states(estados_mortos, dict_newaf):
+        for keys in estados_mortos:
+            dict_newaf.pop(keys)
+
+        # Substituindo estados mortos pelo estado de erro
+        for keys in dict_newaf.keys():
+            if keys != 'Erro':
+                for transicoes in dict_newaf[keys]:
+                    if transicoes[1] in estados_mortos:
+                        transicoes[1] = 'Erro'
+
+    @staticmethod
+    def create_equivalent_sets(dict_newaf, estados_aceitacao):
+        F = {}
+        key_F = estados_aceitacao[0]
+        F[key_F] = []
+        for estados in estados_aceitacao:
+            if estados != key_F:
+                F[key_F].insert(len(F[key_F]), estados)
+
+        KF = {}
+        key_KF = None
+        for keys in dict_newaf.keys():
+            if keys not in estados_aceitacao and keys != 'Erro':
+                KF[keys] = []
+                key_KF = keys
+                break
+
+        for keys in dict_newaf.keys():
+            if keys not in estados_aceitacao and keys != 'Erro' and key_KF != keys:
+                KF[key_KF].insert(len(KF[key_KF]), keys)
+
+        return F, KF
 
     # Funciona - Guardado para backup
     # while len(old_F.keys()) != len(new_F.keys()):

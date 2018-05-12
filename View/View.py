@@ -130,7 +130,20 @@ class View:
                     value=9, command=lambda: [self.set_operacao(9), self.change_window()]).grid(row=9, column=0, sticky=W)
 
         btn_continue = Button(self.frame_info, text="Continuar", command=self.exec_operation)
-        btn_continue.grid(row=10, column=0, columnspan=4, pady=6)
+        btn_continue.grid(row=10, column=0, pady=6, sticky=W)
+
+        btn_salvar = Button(self.frame_info, text="Salvar Expressão", command=self.salvar_expressao)
+        btn_salvar.grid(row=10, column=0, pady=6)
+
+        btn_carregar = Button(self.frame_info, text="Carregar Expressão", command=self.carregar_expressao)
+        btn_carregar.grid(row=10, column=1, pady=6, sticky=W)
+
+    def salvar_expressao(self):
+        self.controller.salvar_expressao(self.expression)
+
+    def carregar_expressao(self):
+        self.expression.insert(INSERT, self.controller.carregar_expressao())
+        self.expression.delete("end-1c", END)
 
     def change_window(self):
         gr = [1, 2, 7]
@@ -141,7 +154,7 @@ class View:
         elif self.operacao not in gr:
             self.frame_expression.grid_remove()
             self.frame_af.grid(row=0, column=1, padx=10, pady=10)
-            if self.operacao == 8:
+            if self.operacao == 8 or self.operacao == 9:
                 self.sentence.grid(row=10, column=1, columnspan=5, pady=2)
             else:
                 self.sentence.grid_remove()
@@ -157,6 +170,9 @@ class View:
         elif self.operacao == 8:
             self.controller.set_dict_af(self.matrix)
             self.controller.set_sentence(self.sentence)
+        elif self.operacao == 9:
+            self.controller.set_dict_af(self.matrix)
+            self.controller.set_sentence_size(self.sentence)
         else:
             self.controller.set_dict_af(self.matrix)
         self.result = self.controller.exec(self.operacao)
@@ -167,7 +183,7 @@ class View:
             self.formata_resultado_gr()
         elif self.operacao == 9:
             self.adequar_frame_resultados_gr()
-            self.result.sort(key=len)
+            #self.result.sort(key=len)
             for result in self.result:
                 self.output_gr.insert(END, result + '\n')
             self.controller.clean_estados_aceitacao()

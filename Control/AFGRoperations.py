@@ -17,6 +17,7 @@ class AFGR:
 
         # Adicionando estado final
         dict_swap['F'] = []
+        estados_aceitacao.insert(len(estados_aceitacao), 'F')
 
         for keys in dict_gr:
             dict_swap[keys] = []
@@ -25,13 +26,28 @@ class AFGR:
             while contador < qtd_elementos:
                 if contador+1 < len(dict_gr[keys]):
                     if dict_gr[keys][contador+1].istitle():
-                        dict_swap[keys].insert(0, [dict_gr[keys][contador], dict_gr[keys][contador+1]])
+                        dict_swap[keys].insert(len(dict_swap[keys]), [dict_gr[keys][contador], dict_gr[keys][contador+1]])
                         contador += 2
                     else:
-                        dict_swap[keys].insert(0, [dict_gr[keys][contador], 'F'])
+                        if AFGR.verifica_estado_final(dict_swap, dict_gr, keys, contador):
+                            dict_swap[keys].insert(len(dict_swap[keys]), [dict_gr[keys][contador], 'F'])
+
                         contador += 1
                 else:
-                    dict_swap[keys].insert(0, [dict_gr[keys][contador], 'F'])
+                    if AFGR.verifica_estado_final(dict_swap, dict_gr, keys, contador):
+                        dict_swap[keys].insert(len(dict_swap[keys]), [dict_gr[keys][contador], 'F'])
                     contador += 1
 
+            # Caso o ultimo elemento seja um nao terminal (NAO FINALIZADO TA REPETIDO O S)
+            AFGR.verifica_estado_final(dict_swap, dict_gr, keys, contador-2)
+
         return dict_swap
+
+    # Verifica os estados finais, tem que ver uma forma melhor no futuro
+    @staticmethod
+    def verifica_estado_final(dict_swap, dict_gr, keys, contador):
+        for estados in dict_swap[keys]:
+            if estados[0] == dict_gr[keys][contador] and estados[1] != 'F':
+                estados[1] = 'F'
+                return False
+        return True
