@@ -220,3 +220,101 @@ class AFoperations:
     #             if transicoes[1] in new_KF[key] or transicoes[1] == key:
     #                 dict_afmin[keys].insert(len(dict_afmin[keys]), [transicoes[0], key])
     #                 break
+
+
+    @staticmethod
+    def afnd_to_afd(afnd):
+        # TODO: chamar o metodo pra eliminar epsilon transicoes
+        # TODO: precisa chamar o metodo pra completar o afnd aqui?
+
+        afd = {}
+        afnd_sf = AFoperations.deleta_asterisco_dicionario(afnd)  # ignoramos se sao ou nao finais
+
+        # marcamos todos os estados como nao visitados,
+        estados_a_visitar = list(afnd_sf.keys())
+        estados_visitados = []
+
+        # empty sequences are false. Fazemos pop para controlar isto.
+        while estados_a_visitar:  # ate visitarmos todos os estados
+            estado_atual = estados_a_visitar.pop(0)
+            # determinimizamos todos os estados:
+
+            estados_atuais = estado_atual.split('.')  # estado_atual pode ser do tipo A.B
+            # empty sequences are false. Fazemos pop para controlar isto.
+            while estados_atuais:
+                ts_sn_afnd = []
+                while estados_atuais:
+                    ts_sn_afnd += afnd_sf[estados_atuais.pop(0)]  # copiamos todas as transicoes do estado n
+                ts_sn_afnd = AFoperations.remove_duplicatas_lista(ts_sn_afnd)  # pode ter duplicatas (eg: A.B)
+
+                ts_sn_afd = [ts_sn_afnd.pop(0)]  # add a 1ra transicao do n-esismo estado da afnd as da afd
+
+                VTs_ja_tratados = [ts_sn_afd[0][0]]  # para garantir q para cada Vt vamos para um unico estado
+
+                # empty sequences are false. Fazemos pop para controlar isto.
+                while range(0, len(ts_sn_afnd)):  # pras demais transicoes deste estado
+                    if ts_sn_afnd[0][0] in VTs_ja_tratados:  # ja existe uma transicao com este Vt?
+                        posicao = VTs_ja_tratados.index(ts_sn_afnd[0][0])
+                        transicao_temporaria = ts_sn_afnd.pop(posicao)  # a transicao q vamos tratar no formato ['b', 'C']
+
+                        transicao_antiga = ts_sn_afd.pop(posicao)
+                        # remove a antiga no afd, eg: remove ['a', 'A'] pra evitar [['a', 'A'], ['a', 'A.B']]
+                        novo_estado = transicao_antiga[1] + '.' + transicao_temporaria[1]  # eg: B + C = B.C
+
+                        if novo_estado not in estados_visitados and novo_estado not in estados_a_visitar:
+                            estados_a_visitar.append(novo_estado)
+
+                        ts_sn_afd.append([transicao_temporaria[0], novo_estado])  # eg:  ['b', 'B.C']
+
+                    else:  # este Vt apareceu pela 1a vez (ie, nao combinamos estados)
+                        t1_sn_afnd = ts_sn_afnd.pop(0)  # adicionar esta transicao
+                        ts_sn_afd.append(t1_sn_afnd)
+                        VTs_ja_tratados.append(t1_sn_afnd[0])  # esta Vt ja foi tratada
+                        if novo_estado not in estados_visitados and novo_estado not in estados_a_visitar:
+                            estados_a_visitar.append(novo_estado)
+
+            # acabamos de processar este estado
+            estados_visitados.append(estado_atual)
+            afd[estado_atual] = ts_sn_afd
+
+        # TODO: marcar quais estados sao finais
+
+        return AFoperations.marca_estados_finais(afnd, afd)
+
+    @staticmethod
+    def remove_duplicatas_lista(lista):
+        lista_temp = []
+        for i in lista:
+            if i not in lista_temp:
+                lista_temp.append(i)
+        return lista_temp
+
+    @staticmethod
+    def deleta_asterisco_dicionario(afnd):
+        dic_aux = {}
+        for i in afnd:
+
+            j = i.replace('*', '')
+            dic_aux[j] = afnd[i]
+        return  dic_aux
+
+    @staticmethod
+    def marca_estados_finais(afnd, afd):
+        afd_aux = {}
+        for estado in afd:
+            subestados = estado.split('.')
+            final = False
+
+            for i in subestados:
+                try:  # nao eh final
+                    _ = afnd[i]
+                except KeyError:  # eh final
+                    _ = afd[i]
+                    final = True
+
+            if final:
+                str_aux = '*' + estado
+                afd_aux[str_aux] = afd[estado]
+            else:
+                afd_aux[estado] = afd[estado]
+        return afd_aux
