@@ -10,6 +10,7 @@ from Control.SentenceOperations import *
 # - Trocar como faz o reconhecimento de estados finais pra GR
 # - Nem sempre o estado de erro precisa aparecer, corrigir isso
 # - Corrigir GR->AF, teste com S->a|aS
+# no menu principal, se apertar em carregar expressao 2x, falta botar um \n entre elas
 
 class Controller:
 
