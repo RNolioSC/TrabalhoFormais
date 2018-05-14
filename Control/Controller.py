@@ -1,7 +1,9 @@
 from Control.AFGRoperations import *
 from Control.AFoperations import *
-from View.View import *
 from Control.SentenceOperations import *
+from Control.GRoperations import *
+from Control.ERoperations import *
+from View.View import *
 
 #TODO
 # - Corrigir bug que suja a GR se for feito uma operacao qualquer (?) antes dela
@@ -9,7 +11,8 @@ from Control.SentenceOperations import *
 # - Explicitar caso de erro e definir as transicoes do estado final como estado de erro
 # - Trocar como faz o reconhecimento de estados finais pra GR
 # - Nem sempre o estado de erro precisa aparecer, corrigir isso
-# - Corrigir GR->AF, teste com S->a|aS
+# - Generalizar um monte de coisas
+# - self.second_entry.pack() Trocar isso e o outro cara que usa isso por grid()
 
 class Controller:
 
@@ -17,6 +20,7 @@ class Controller:
     dict_af = {}
     dict_gr = {}
     dict_er = {}
+    dict_gr_op = {}
     estados_aceitacao = []
     sentence = None
     sentence_size = None
@@ -49,6 +53,19 @@ class Controller:
         return SentenceOperations.accept_sentence(producoes, sentence, cur_key, estados_aceitacao, dict_af)
     # --------------------------------
 
+    # Modulo operacoes com GR
+    def fechamento(self):
+        self.dict_af = self.gr_to_af()
+        self.estado_inicial, self.estados_aceitacao = GRoperations.fechamento(self.dict_af, self.estado_inicial, self.estados_aceitacao)
+        return self.dict_af
+
+    # -----------------------
+
+    # Modulo ER->AF
+    def er_to_af(self):
+        ERoperations.er_to_af()
+    # -------------
+
     # Salvar/Carregar arquivo
 
     def salvar_expressao(self, expressao):
@@ -75,9 +92,13 @@ class Controller:
         elif operacao == 6:
             return self.get_dict_af()
         elif operacao == 7:
-            return self.get_dict_gr()
+            return self.fechamento()
         elif operacao == 8:
             return self.accept_sentence(self.dict_af[self.estado_inicial], list(self.sentence)[:-1], self.estado_inicial, self.estados_aceitacao, self.dict_af)
+        elif operacao == 9:
+            return self.GRoperations.uniao(af1, af2, ei1, ei2, ef1, ef2)
+        elif operacao == 10:
+            return self.GRoperations.concatenacao(af1, af2, ei1, ei2, ef1, ef2)
         else:
             return self.enum_sentences(self.sentence_size, self.estado_inicial, self.estados_aceitacao, self.dict_af)
 
@@ -116,9 +137,9 @@ class Controller:
     def set_dict_gr(self, gr_text):
         self.clean_dict_gr()
         gr = gr_text.get("1.0", END).splitlines()
+        self.set_estado_inicial(gr[0][0])
         for lines in gr:
             self.dict_gr[lines[0]] = []
-            self.set_estado_inicial(lines[0])
             contador = 3
             index = 0
             while contador < len(lines):
@@ -160,51 +181,20 @@ class Controller:
     def set_estado_inicial(self, estado_inicial):
         self.estado_inicial = estado_inicial
 
-    # def set_dict_gr(self, gr_text):
-    #     gr = gr_text.get("1.0", END).splitlines()
-    #     for lines in gr:
-    #         self.dict_gr[lines[0]] = []
-    #         contador = 3
-    #         index = 0
-    #         while contador < len(lines):
-    #             if lines[contador] is "|":
-    #                 contador += 1
-    #             else:
-    #                 if contador+1 <= len(lines)-1:
-    #                     if lines[contador+1] is not "|":
-    #                         self.dict_gr[lines[0]].insert(index, [lines[contador], lines[contador + 1]])
-    #                         contador += 2
-    #                         index += 1
-    #                     else:
-    #                         self.dict_gr[lines[0]].insert(index, [lines[contador]])
-    #                         contador += 1
-    #                         index += 1
-    #                 else:
-    #                     self.dict_gr[lines[0]].insert(index, [lines[contador]])
-    #                     contador += 1
-    #                     index += 1
-    #     print(self.dict_gr)
-    #     return 0
-
-
-    # def enum_af(self):
-    #     enum_sentencas_aceitas = []
-    #     string = ""
-    #     profundidade = 0
-    #     primeiras_producoes = self.dict_af['S']
-    #     print(self.estados_aceitacao)
-    #     self.enum_op(primeiras_producoes, profundidade, 'S', enum_sentencas_aceitas, string)
-    #
-    #     return enum_sentencas_aceitas
-    #
-    # def enum_op(self, prim_prod, prof, cur_key, enum_acc, string):
-    #
-    #     if prof < self.CONST_PROFUNDIDADE:
-    #         old_string = string
-    #         for producoes in prim_prod:
-    #             string += producoes[0]
-    #             key = producoes[1]
-    #             if key in self.estados_aceitacao and string not in enum_acc:
-    #                 enum_acc.insert(len(enum_acc), string)
-    #             self.enum_op(self.dict_af[key], prof+1, key, enum_acc, string)
-    #             string = old_string
+    # TODO generalizar o set_dict_gr e apagar isso
+    def set_dict_gr_op(self, gr_text):
+        self.dict_gr_op = {}
+        gr = gr_text.get("1.0", END).splitlines()
+        self.set_estado_inicial(gr[0][0])
+        for lines in gr:
+            self.dict_gr_op[lines[0]] = []
+            contador = 3
+            index = 0
+            while contador < len(lines):
+                if lines[contador] is "|":
+                    contador += 1
+                else:
+                    self.dict_gr_op[lines[0]].insert(index, lines[contador])
+                    contador += 1
+                    index += 1
+        print(self.dict_gr_op)

@@ -8,7 +8,6 @@ class AFGR:
             for list in dict_af[keys]:
                 dict_swap[keys].insert(len(dict_swap[keys]), list[0])
                 dict_swap[keys].insert(len(dict_swap[keys]), list[1])
-
         return dict_swap
 
     @staticmethod
@@ -29,25 +28,29 @@ class AFGR:
                         dict_swap[keys].insert(len(dict_swap[keys]), [dict_gr[keys][contador], dict_gr[keys][contador+1]])
                         contador += 2
                     else:
-                        if AFGR.verifica_estado_final(dict_swap, dict_gr, keys, contador):
+                        if AFGR.verifica_estado_final(dict_swap, dict_gr, keys, contador, True):
                             dict_swap[keys].insert(len(dict_swap[keys]), [dict_gr[keys][contador], 'F'])
 
                         contador += 1
                 else:
-                    if AFGR.verifica_estado_final(dict_swap, dict_gr, keys, contador):
+                    if AFGR.verifica_estado_final(dict_swap, dict_gr, keys, contador, True):
                         dict_swap[keys].insert(len(dict_swap[keys]), [dict_gr[keys][contador], 'F'])
                     contador += 1
 
-            # Caso o ultimo elemento seja um nao terminal (NAO FINALIZADO TA REPETIDO O S)
-            AFGR.verifica_estado_final(dict_swap, dict_gr, keys, contador-2)
+            # Caso o ultimo elemento seja um nao terminal
+            if not(AFGR.verifica_estado_final(dict_swap, dict_gr, keys, contador-2, False)):
+                del dict_swap[keys][contador-2]
 
         return dict_swap
 
     # Verifica os estados finais, tem que ver uma forma melhor no futuro
+    # op -> True - Substitui o estado, False - Elimina o estado
     @staticmethod
-    def verifica_estado_final(dict_swap, dict_gr, keys, contador):
+    def verifica_estado_final(dict_swap, dict_gr, keys, contador, op):
         for estados in dict_swap[keys]:
-            if estados[0] == dict_gr[keys][contador] and estados[1] != 'F':
+            if estados[0] == dict_gr[keys][contador] and estados[1] != 'F' and op:
                 estados[1] = 'F'
+                return False
+            elif estados[0] == dict_gr[keys][contador] and estados[1] != 'F' and not op:
                 return False
         return True

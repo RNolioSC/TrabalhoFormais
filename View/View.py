@@ -42,6 +42,7 @@ class View:
         self.create_output_af()
         self.create_output_gr()
         self.sentence = Text(self.frame_af, bg='white', height=2, width=15)
+        self.second_entry = Text(self.frame_expression, bg='white', height=13, width=22)
 
         # Frame default
         self.frame_expression.grid(row=0, column=1, padx=10, pady=10)
@@ -122,7 +123,7 @@ class View:
                     command=lambda: [self.set_operacao(5), self.change_window()]).grid(row=5, column=0, sticky=W)
         Radiobutton(self.frame_info, text="Operações com AF", variable="Operacao", value=6, tristatevalue=0,
                     command=lambda: [self.set_operacao(6), self.change_window()]).grid(row=6, column=0, sticky=W)
-        Radiobutton(self.frame_info, text="Operações com GR", variable="Operacao", value=7, tristatevalue=0,
+        Radiobutton(self.frame_info, text="Fechamento de GR", variable="Operacao", value=7, tristatevalue=0,
                     command=lambda: [self.set_operacao(7), self.change_window()]).grid(row=7, column=0, sticky=W)
         Radiobutton(self.frame_info, text="Reconhecimento de sentenças de um AF", variable="Operacao", tristatevalue=0,
                     value=8, command=lambda: [self.set_operacao(8), self.change_window()]).grid(row=8, column=0, sticky=W)
@@ -142,6 +143,7 @@ class View:
         self.controller.salvar_expressao(self.expression)
 
     def carregar_expressao(self):
+        self.expression.delete("1.0", END)
         self.expression.insert(INSERT, self.controller.carregar_expressao())
         self.expression.delete("end-1c", END)
 
@@ -151,22 +153,26 @@ class View:
         if self.operacao in gr:
             self.frame_af.grid_remove()
             self.frame_expression.grid(row=0, column=1, padx=10, pady=10)
+            if self.operacao == 7:
+                self.second_entry.pack()
+            else:
+                self.second_entry.grid_remove()
         elif self.operacao not in gr:
             self.frame_expression.grid_remove()
             self.frame_af.grid(row=0, column=1, padx=10, pady=10)
             if self.operacao == 8 or self.operacao == 9:
                 self.sentence.grid(row=10, column=1, columnspan=5, pady=2)
-            else:
-                self.sentence.grid_remove()
-
     def set_operacao(self, opcao):
         self.operacao = opcao
 
     def exec_operation(self):
-        if self.operacao == 2 or self.operacao == 7:
+        if self.operacao == 2:
             self.controller.set_dict_gr(self.expression)
         elif self.operacao == 1:
             self.controller.set_dict_er(self.expression)
+        elif self.operacao == 7:
+            self.controller.set_dict_gr(self.expression)
+            self.controller.set_dict_gr_op(self.second_entry)
         elif self.operacao == 8:
             self.controller.set_dict_af(self.matrix)
             self.controller.set_sentence(self.sentence)
@@ -179,7 +185,9 @@ class View:
         self.exibir_resultados()
 
     def exibir_resultados(self):
-        if self.operacao == 3 or self.operacao == 7:
+        if self.operacao == 7:
+            self.formata_resultado_af()
+        if self.operacao == 3:
             self.formata_resultado_gr()
         elif self.operacao == 9:
             self.adequar_frame_resultados_gr()
@@ -246,7 +254,10 @@ class View:
 
             self.output_af[rows+1][0].insert(0, key)
             for columns in range(len(self.result[keys[rows]])):
-                self.output_af[rows+1][alfabeto.index(self.result[keys[rows]][columns][0])+1].insert(0, self.result[keys[rows]][columns][1])
+                if len(self.output_af[rows+1][alfabeto.index(self.result[keys[rows]][columns][0])+1].get()) == 0:
+                    self.output_af[rows+1][alfabeto.index(self.result[keys[rows]][columns][0])+1].insert(0, self.result[keys[rows]][columns][1])
+                else:
+                    self.output_af[rows + 1][alfabeto.index(self.result[keys[rows]][columns][0]) + 1].insert(0, self.result[keys[rows]][columns][1]+".")
 
         self.controller.clean_estados_aceitacao()
 
