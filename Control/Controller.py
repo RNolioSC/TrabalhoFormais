@@ -12,7 +12,6 @@ from View.View import *
 # - Trocar como faz o reconhecimento de estados finais pra GR
 # - Nem sempre o estado de erro precisa aparecer, corrigir isso
 # - Generalizar um monte de coisas
-# - self.second_entry.pack() Trocar isso e o outro cara que usa isso por grid()
 
 class Controller:
 
@@ -156,6 +155,9 @@ class Controller:
 
     def set_sentence(self, sentence):
         self.sentence = sentence.get("1.0", END)
+
+    def get_estado_inicial(self):
+        return self.estado_inicial
 
     def get_dict_af(self):
         return self.dict_af

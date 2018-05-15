@@ -72,7 +72,7 @@ class View:
         self.frame_expression = Frame(self.root)
 
         self.expression = Text(self.frame_expression, bg='white', height=13, width=22)
-        self.expression.pack()
+        self.expression.grid(row=0, column=0)
 
     def create_frame_resultados(self):
         self.frame_resultados_af = Frame(self.root)
@@ -154,7 +154,7 @@ class View:
             self.frame_af.grid_remove()
             self.frame_expression.grid(row=0, column=1, padx=10, pady=10)
             if self.operacao == 7:
-                self.second_entry.pack()
+                self.second_entry.grid(row=0, column=1)
             else:
                 self.second_entry.grid_remove()
         elif self.operacao not in gr:
@@ -162,6 +162,7 @@ class View:
             self.frame_af.grid(row=0, column=1, padx=10, pady=10)
             if self.operacao == 8 or self.operacao == 9:
                 self.sentence.grid(row=10, column=1, columnspan=5, pady=2)
+
     def set_operacao(self, opcao):
         self.operacao = opcao
 
@@ -230,8 +231,9 @@ class View:
     def formata_resultado_af(self):
         self.adequar_frame_resultados_af()
 
-        keys = list(self.result.keys())
+        keys = list(self.result.keys()).copy()
         estados_aceitacao = self.controller.get_estados_aceitacao()
+        init_key = self.controller.get_estado_inicial()
         alfabeto = []
 
         # Seta alfabeto
@@ -246,18 +248,32 @@ class View:
             self.output_af[0][index + 1].insert(0, char)
             index += 1
 
+        # Seta estado inicial como primeiro elemento
+        tmp_key = init_key
+        if init_key in estados_aceitacao:
+            tmp_key = '*' + init_key
+
+        self.output_af[1][0].insert(0, tmp_key)
+
+        for transicoes in range(len(self.result[init_key])):
+            if len(self.output_af[1][alfabeto.index(self.result[init_key][transicoes][0]) + 1].get()) == 0:
+                self.output_af[1][alfabeto.index(self.result[init_key][transicoes][0]) + 1].insert(0, self.result[init_key][transicoes][1])
+            else:
+                self.output_af[1][alfabeto.index(self.result[init_key][transicoes][0]) + 1].insert(0, self.result[init_key][transicoes][1]+".")
+        keys.remove(init_key)
+
         # Seta restante da tabela
         for rows in range(len(keys)):
             key = keys[rows]
             if keys[rows] in estados_aceitacao:
                 key = '*' + keys[rows]
 
-            self.output_af[rows+1][0].insert(0, key)
+            self.output_af[rows+2][0].insert(0, key)
             for columns in range(len(self.result[keys[rows]])):
-                if len(self.output_af[rows+1][alfabeto.index(self.result[keys[rows]][columns][0])+1].get()) == 0:
-                    self.output_af[rows+1][alfabeto.index(self.result[keys[rows]][columns][0])+1].insert(0, self.result[keys[rows]][columns][1])
+                if len(self.output_af[rows+2][alfabeto.index(self.result[keys[rows]][columns][0])+1].get()) == 0:
+                    self.output_af[rows+2][alfabeto.index(self.result[keys[rows]][columns][0])+1].insert(0, self.result[keys[rows]][columns][1])
                 else:
-                    self.output_af[rows + 1][alfabeto.index(self.result[keys[rows]][columns][0]) + 1].insert(0, self.result[keys[rows]][columns][1]+".")
+                    self.output_af[rows+2][alfabeto.index(self.result[keys[rows]][columns][0]) + 1].insert(0, self.result[keys[rows]][columns][1]+".")
 
         self.controller.clean_estados_aceitacao()
 
