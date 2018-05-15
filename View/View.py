@@ -186,9 +186,11 @@ class View:
         self.exibir_resultados()
 
     def exibir_resultados(self):
-        if self.operacao == 7:
+        if self.operacao == 1:
+            pass
+        elif self.operacao == 7:
             self.formata_resultado_af()
-        if self.operacao == 3:
+        elif self.operacao == 3:
             self.formata_resultado_gr()
         elif self.operacao == 9:
             self.adequar_frame_resultados_gr()

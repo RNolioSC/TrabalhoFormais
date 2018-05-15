@@ -18,7 +18,7 @@ class Controller:
     # Armazenamento
     dict_af = {}
     dict_gr = {}
-    dict_er = {}
+    er_expression = {}
     dict_gr_op = {}
     estados_aceitacao = []
     sentence = None
@@ -62,7 +62,7 @@ class Controller:
 
     # Modulo ER->AF
     def er_to_af(self):
-        ERoperations.er_to_af()
+        return ERoperations.er_to_af(self.er_expression)
     # -------------
 
     # Salvar/Carregar arquivo
@@ -79,7 +79,7 @@ class Controller:
 
     def exec(self, operacao):
         if operacao == 1:
-            return self.get_dict_af()
+            return self.er_to_af()
         elif operacao == 2:
             return self.gr_to_af()
         elif operacao == 3:
@@ -151,7 +151,7 @@ class Controller:
         print(self.dict_gr)
 
     def set_dict_er(self, gr_text):
-        return self.dict_er
+        self.er_expression = gr_text.get("1.0", END)
 
     def set_sentence(self, sentence):
         self.sentence = sentence.get("1.0", END)
