@@ -26,13 +26,12 @@ class ERoperations:
                 else:
                     print(nodo.get_simbolo() + " pai: " + nodo.get_pai().get_simbolo() + " lado: " + nodo.get_lado_pai() + " não costurado")
             else:
-                if nodo.get_eh_raiz() is not None:
+                if nodo.get_costura() is not None:
                     print(nodo.get_simbolo() + " raiz" + " costurado com:" + nodo.get_costura().get_simbolo())
                 else:
                     print(nodo.get_simbolo() + " raiz")
-
         # Criar tabela
-        ERoperations.criacao_tabela(arvore)
+        return ERoperations.criacao_tabela(arvore)
 
     @staticmethod
     def costurar_arvore(pilha, elemento):
@@ -47,7 +46,6 @@ class ERoperations:
 
     @staticmethod
     def nodo_raiz(arvore, new_er_expression):
-        print("---")
         operador_atual = '$'
         operador_atual, posicao_operador_atual = ERoperations.new_operator(operador_atual, new_er_expression)
 
@@ -76,12 +74,15 @@ class ERoperations:
         state = 'Q'
 
         novos_estados = []
-        historico = []
+        historico = {}
         lista_estados_atual = []
         dict_associacao = {}
         dict_simbolo_estado = {}
         dict_af = {}
         ja_add = []
+        estados_excluidos = []
+        excluido_por = {}
+        estados_aceitacao = []
 
         # Estado inicial
         ERoperations.criar_tabela(lista_estados_atual, arvore[0], 'DESCER')
@@ -97,41 +98,69 @@ class ERoperations:
                 ja_add.insert(0, simbolos.get_simbolo())
             elif simbolos.get_simbolo() != 'λ':
                 dict_associacao[dict_simbolo_estado[simbolos.get_simbolo()]].insert(0, simbolos)
-        historico = lista_estados_atual.copy()
-
-        # print(novos_estados)
-        # print(dict_af)
-        # print(dict_simbolo_estado)
-        # print(dict_associacao)
-        # for s in lista_estados_atual:
-        #     print(s.get_simbolo())
-        # return
+            else:
+                estados_aceitacao.insert(len(estados_aceitacao), 'Q0')
+        historico['Q0'] = lista_estados_atual.copy()
 
         while len(novos_estados) != 0:
             ja_add = []
             estado_atual = novos_estados.pop(0)
             lista_estados_atual = []
 
+            # Analiso a arvore
             for simbolos in dict_associacao[estado_atual]:
-                ERoperations.criar_tabela(lista_estados_atual, simbolos.get_costura(), 'SUBIR')
+                if simbolos.get_simbolo() != 'λ':
+                    ERoperations.criar_tabela(lista_estados_atual, simbolos.get_costura(), 'SUBIR')
 
-            dict_af[estado_atual] = []
-            for simbolos in lista_estados_atual:
-                if simbolos.get_simbolo() not in ja_add:
-                    novo_estado = state+str(number_states)
-                    dict_af[estado_atual].insert(len(dict_af[novo_estado]), [simbolos.get_simbolo(), novo_estado])
-                    novos_estados.insert(len(novos_estados), novo_estado)
-                    dict_associacao[novo_estado] = [simbolos]
-                    dict_simbolo_estado[simbolos.get_simbolo()] = [novo_estado]
-                    number_states += 1
-                    ja_add.insert(0, simbolos.get_simbolo())
+            # Se só tem λ como simbolo
+            if not lista_estados_atual:
+                dict_af[estado_atual] = []
+                estados_aceitacao.insert(len(estados_aceitacao), estado_atual)
+            else:
+                # Verifico se estado já existe
+                for keys in historico.keys():
+                    if historico[keys] == lista_estados_atual:
+                        estados_excluidos.insert(len(estados_excluidos), estado_atual)
+                        excluido_por[estado_atual] = keys
+
+                if estado_atual not in estados_excluidos:
+                    # Crio novos estados
+                    dict_af[estado_atual] = []
+                    for simbolos in lista_estados_atual:
+                        if simbolos.get_simbolo() not in ja_add and simbolos.get_simbolo() != 'λ':
+                            novo_estado = state+str(number_states)
+                            dict_af[estado_atual].insert(len(dict_af[estado_atual]), [simbolos.get_simbolo(), novo_estado])
+                            novos_estados.insert(len(novos_estados), novo_estado)
+                            dict_associacao[novo_estado] = [simbolos]
+                            dict_simbolo_estado[simbolos.get_simbolo()] = [novo_estado]
+                            number_states += 1
+                            ja_add.insert(0, simbolos.get_simbolo())
+                        elif simbolos.get_simbolo() != 'λ':
+                            dict_associacao[dict_simbolo_estado[simbolos.get_simbolo()]].insert(0, simbolos)
+                        else:
+                            estados_aceitacao.insert(len(estados_aceitacao), estado_atual)
                 else:
-                    dict_associacao[dict_simbolo_estado[simbolos.get_simbolo()]].insert(0, simbolos)
+                    # Apagar referencias desse estado
+                    for keys in dict_af.keys():
+                        for transicoes in dict_af[keys]:
+                            for simbolos in estados_excluidos:
+                                if transicoes[1] == simbolos:
+                                    transicoes[1] = excluido_por[simbolos]
+
+            # Add nova lista para comparacoes futuras
+            historico[estado_atual] = lista_estados_atual.copy()
+
+        for s in lista_estados_atual:
+            print(s.get_simbolo())
+        print(estados_aceitacao)
+        return dict_af, estados_aceitacao, 'Q0'
+
 
     @staticmethod
     def criar_tabela(lista_elementos, elemento, direcao):
         if elemento.get_eh_folha() or elemento.get_simbolo() == 'λ':
             lista_elementos.insert(len(lista_elementos), elemento)
+            return
 
         if elemento.get_simbolo() == '*':
             ERoperations.criar_tabela(lista_elementos, elemento.get_filho_esquerda(), 'DESCER')
@@ -140,7 +169,7 @@ class ERoperations:
             if direcao == 'DESCER':
                 ERoperations.criar_tabela(lista_elementos, elemento.get_filho_esquerda(), 'DESCER')
             else:
-                ERoperations.criar_tabela(lista_elementos, elemento.get_filho_esquerda(), 'DESCER')
+                ERoperations.criar_tabela(lista_elementos, elemento.get_filho_direita(), 'DESCER')
         if elemento.get_simbolo() == '|':
             if direcao == 'DESCER':
                 ERoperations.criar_tabela(lista_elementos, elemento.get_filho_esquerda(), 'DESCER')

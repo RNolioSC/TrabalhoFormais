@@ -187,7 +187,7 @@ class View:
 
     def exibir_resultados(self):
         if self.operacao == 1:
-            pass
+            self.formata_resultado_af()
         elif self.operacao == 7:
             self.formata_resultado_af()
         elif self.operacao == 3:

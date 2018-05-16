@@ -62,7 +62,8 @@ class Controller:
 
     # Modulo ER->AF
     def er_to_af(self):
-        return ERoperations.er_to_af(self.er_expression)
+        self.dict_af, self.estados_aceitacao, self.estado_inicial = ERoperations.er_to_af(self.er_expression)
+        return self.dict_af
     # -------------
 
     # Salvar/Carregar arquivo
