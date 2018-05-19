@@ -216,7 +216,6 @@ class AFoperations:
     
     @staticmethod
     def afnd_to_afd(afnd):
-        # TODO: nao garante que o primeiro simbolo eh o inicial. Corrigir
         # suporta afnds com &
         afnd_sem_epsilon = AFoperations.eliminar_epsilon_transicoes(afnd)
         afd = {}
@@ -230,25 +229,21 @@ class AFoperations:
         while estados_a_visitar:  # ate visitarmos todos os estados
             estado_atual = estados_a_visitar.pop(0)
 
-            # determinimizamos todos os estados:
             subestados_atuais = estado_atual.split('.')  # estado_atual pode ser do tipo A.B
 
-
             ts_sn_afnd = []  # transicoes do estado atual do afnd
+
             # listas vazias retornam falso. Fazemos pop para controlar isto.
             while subestados_atuais:
-                #for i in range(0, len(subestados_atuais)):
                 ts_sn_afnd += afnd_sf[subestados_atuais.pop(0)]  # copiamos todas as transicoes do estado n
 
-            ts_sn_afnd = AFoperations.remove_duplicatas_lista(ts_sn_afnd)  # pode ter duplicatas (eg: A.B)
-
+            # pode ter transicoes duplicadas
+            ts_sn_afnd = AFoperations.remove_duplicatas_lista(ts_sn_afnd)
             ts_sn_afd = [ts_sn_afnd.pop(0)]  # add a 1ra transicao do n-esismo estado da afnd as da afd
             VTs_ja_tratados = [ts_sn_afd[0][0]]  # para garantir q para cada Vt vamos para um unico estado
 
-            #while range(0, len(ts_sn_afnd)):
             while ts_sn_afnd:  # pras demais transicoes deste estado
                 if ts_sn_afnd[0][0] in VTs_ja_tratados:  # ja existe uma transicao com este Vt?
-
                     transicao_temporaria = ts_sn_afnd.pop(0)  # a transicao q vamos tratar no formato ['b', 'C']
 
                     # removemos a antiga no afd, eg: remove ['a', 'A'] pra evitar ter [['a', 'A'], ['a', 'A.B']]
@@ -256,7 +251,7 @@ class AFoperations:
                     for j in range(0, len(ts_sn_afd)):
                         if ts_sn_afd[j][0] == transicao_temporaria[0]:
                             posicao = j
-                    #posicao = ts_sn_afd.index([transicao_temporaria[0], _])
+                            break
                     transicao_antiga = ts_sn_afd.pop(posicao)
                     novo_estado = transicao_antiga[1] + '.' + transicao_temporaria[1]  # eg: B + C = B.C
                     if novo_estado not in estados_visitados and novo_estado not in estados_a_visitar:
@@ -266,10 +261,11 @@ class AFoperations:
                 else:  # este Vt apareceu pela 1a vez (ie, nao combinamos estados)
                     t1_sn_afnd = ts_sn_afnd.pop(0)  # adicionar esta transicao
                     ts_sn_afd.append(t1_sn_afnd)
-                    VTs_ja_tratados.append(t1_sn_afnd[0])  # marcamos esta Vt como tratada
+                    VTs_ja_tratados.append(t1_sn_afnd[0])  # marcamos este Vt como tratado
 
             # acabamos de processar este estado
             estados_visitados.append(estado_atual)
+            # ja foi removido dos estados a visitar
             afd[estado_atual] = ts_sn_afd
         return AFoperations.marca_estados_finais(afnd_sem_epsilon, afd)
 
@@ -324,8 +320,8 @@ class AFoperations:
             transicoes = []
             # adicionamos as transicoes de cada estado do fechamento. Obs: o fechamento inclui o proprio estado
             for estado_fech in fechamento:
-                temp = afnd_sf[estado_fech]
-                for i in temp:
+                transicoes_temp = afnd_sf[estado_fech]
+                for i in transicoes_temp:
                     if i[0] != '&':  # nao queremos transicoes epsilon no afnd resultante
                         transicoes.append(i)
             # podemos ter transicoes repetidas
@@ -341,7 +337,7 @@ class AFoperations:
         while fechamento != fechamento_anterior:
             fechamento_anterior = list(fechamento)  # copiamos
 
-            for i in fechamento:
+            for i in fechamento_anterior:
                 transicoes = afnd[i]  # copiamos as transicoes [['a' , 'A'], ...]
                 for j in range(0, len(transicoes)):
                     if transicoes[j][0] == '&' and not transicoes[j][1] in fechamento:
@@ -350,58 +346,68 @@ class AFoperations:
         return fechamento
 
     @staticmethod
-    def renomear_estados_compostos(af):  # renomeia estados do tipo A.B
-        af_sf = AFoperations.deleta_asterisco_dicionario(af)
+    def renomear_estados_compostos(afd):
 
+        af_sf = AFoperations.deleta_asterisco_dicionario(afd)
         estados_existentes = list(af_sf.keys())
         estados_todos = list(string.ascii_uppercase)
-        estados_possiveis = []
+        nomes_possiveis_estados = []
         estados_finais = []
+        nome_velho_novo = {}  # usamos para renomear as transicoes
+
         for k in estados_existentes:
-            if AFoperations.eh_final(af, k):
+            if AFoperations.eh_final(afd, k):
                 estados_finais.append(k)
 
         for i in estados_todos:
             if i not in estados_existentes:
-                estados_possiveis.append(i)
+                nomes_possiveis_estados.append(i)
 
-        for j in estados_existentes:
-            if '.' in j:  # este estado eh do tipo A.B
-                novo_nome = estados_possiveis.pop(0)
-                estados_finais.append(novo_nome)
-                # renomeia as transicoes q vao pra este estado no resto do af
-                for i in af_sf:  # todas as transicoes do estado 'i'
-                    transicoes = list(af_sf[i])
-                    transicoes_novas = []
-                    while transicoes:
-                        transicao = transicoes.pop(0)
-                        if transicao[1] == j:
-                            transicoes_novas.append([transicao[0], novo_nome])
-                        else:
-                            transicoes_novas.append(transicao)
-                    del af_sf[i]
-                    af_sf[i] = transicoes_novas
+        # renomeando estados:
+        for estado in estados_existentes:
+            novo_nome = estado
+            if '.' in estado:  # este estado sera renomeado
+                novo_nome = nomes_possiveis_estados.pop(0)
+                nome_velho_novo[estado] = novo_nome
+            # else: este estado nao sera renomeado
 
-                # renomeia este estado (key) e o marca como final se necesario
-                if novo_nome in estados_finais:
-                    temp = '*' + novo_nome
-                    af_sf[temp] = af_sf[j]
-                    del af_sf[j]
-                else:
-                    af_sf[novo_nome] = af_sf[j]
-                    del af_sf[j]
+            # marcamos os estados como finais se necesario
+            if estado in estados_finais:
+                nome_temp = '*' + novo_nome
+                transicoes_temp = af_sf[estado]
+                del af_sf[estado]
+                af_sf[nome_temp] = transicoes_temp
+            else:  #nao eh final
+                transicoes_temp = af_sf[estado]
+                del af_sf[estado]
+                af_sf[novo_nome] = transicoes_temp
 
-            else:  # este estado nao eh do tipo A.B, marcamos se é final ou nao
-                if j in estados_finais:
-                    temp = '*' + j
-                    af_sf[temp] = af_sf[j]
-                    del af_sf[j]
-                # else: nao precisa modificar
-        return af_sf
+        # renomeamos os estados nas transicoes
+        af_final = {}
+        for estado in af_sf:
+            transicoes_velhas = list(af_sf[estado])  # copiamos as transicoes deste estado
+            transicoes_novas = []
+            while transicoes_velhas:
+                transicao = transicoes_velhas.pop(0)
+                if '.' in transicao[1]:  # esta transicao vai para um estado composto
 
+                    for nome_velho in nome_velho_novo:  # encontra qual eh o novo nome pra este estado
+                        if transicao[1] == nome_velho:
+                            transicoes_novas.append([transicao[0], nome_velho_novo[nome_velho]])
+                            break
+                else:  # esta transicao vai para um estado nao composto
+                    transicoes_novas.append(transicao)
+
+                af_final[estado] = transicoes_novas
+        return af_final
 
     @staticmethod
     def uniao_afnds(afnd1, afnd2):
+
+        # o novo estado inicial sera final?
+        novo_estado_eh_final = False
+        if list(afnd1.keys())[0][0] == '*' or list(afnd2.keys())[0][0] == '*':  # 1ro caractere do 1ro estado do afd
+            novo_estado_eh_final = True
 
         estados_afnd1 = []
         estados_afnd2 = []
@@ -429,8 +435,11 @@ class AFoperations:
 
         # criamos transicoes epsilon do novo estado inicial para os 2 antigos estados inicias dos 2 afnds
         nova_transicao = [['&', estados_afnd1[0]], ['&', estados_afnd2[0]]]
-        afnd_final = {estado_inicial: nova_transicao}
 
+        if novo_estado_eh_final:
+            estado_inicial = '*' + estado_inicial
+
+        afnd_final = {estado_inicial: nova_transicao}
         # adicionamos os estados e transicoes dos 2 afnds originais a afnd final:
         for i in afnd1:
             afnd_final[i] = afnd1[i]
@@ -486,14 +495,24 @@ class AFoperations:
 
     @staticmethod
     def complemento(afnd):
-        afd_temp = AFoperations.afnd_to_afd(afnd)  # pode ter estados com nome A.B
+        # param: aceita qualquer afnd
+
+        afd_temp = AFoperations.afnd_to_afd(afnd)  # determinimizamos, pode ter estados com nome A.B
         afd = AFoperations.renomear_estados_compostos(afd_temp)
         alfabeto = AFoperations.getAlfabeto(afd)
-        AFoperations.explicitar_estados_mortos(afd, alfabeto)
+        AFoperations.explicitar_estados_mortos(afd, alfabeto)  # afd eh completa
 
-        #TODO: terminar
+        # invertendo o status de final:
+        afd_final = {}
+        for i in afd:
+            if i[0] == '*':  # eh final
+                novo_estado = i[1:]
+                afd_final[novo_estado] = afd[i]
+            else:
+                novo_estado = '*' + i
+                afd_final[novo_estado] = afd[i]
 
-        return afd
+        return afd_final
 
     @staticmethod
     def getAlfabeto(afnd):
@@ -510,3 +529,22 @@ class AFoperations:
                 if transicao[0] not in alfabeto and transicao[0] != '&':
                     alfabeto.append(transicao[0])
         return alfabeto
+
+    @staticmethod
+    def intersecao(afnd1, afnd2):
+
+        # renomeamos a afnd2 para nao termos mais de 1 estado com o msm nome
+        estados_afnd1 = []
+        for i in afnd1:
+            if i[0] == '*':  # tiramos o * do estado final
+                estados_afnd1.append(i[1:])
+            else:
+                estados_afnd1.append(i)
+        afnd2_renom = AFoperations.renomear_estados(afnd2, estados_afnd1)
+
+        # por De Morgan af1 intersecao af2 = compl(compl(af1) uniao compl(af2))
+        afnd1_compl = AFoperations.complemento(afnd1)
+        afnd2_compl = AFoperations.complemento(afnd2_renom)
+        afnd_result = AFoperations.uniao_afnds(afnd1_compl, afnd2_compl)
+        #return AFoperations.complemento(afnd_result)  # TODO: aqui da problema
+        return afnd_result  # TODO: somente para debug, remover depois. Usar o return acima
