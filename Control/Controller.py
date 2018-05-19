@@ -8,9 +8,7 @@ from View.View import *
 #TODO
 # - Corrigir bug que suja a GR se for feito uma operacao qualquer (?) antes dela
 # - Quando editar uma GR e retirar um estado dos estados final, (corrigir) verificar se o que era final antes volta a ser nao final
-# - Explicitar caso de erro e definir as transicoes do estado final como estado de erro
 # - Trocar como faz o reconhecimento de estados finais pra GR
-# - Nem sempre o estado de erro precisa aparecer, corrigir isso
 # - Generalizar um monte de coisas
 
 class Controller:

@@ -93,11 +93,11 @@ class ERoperations:
                 dict_af['Q0'].insert(len(dict_af['Q0']), [simbolos.get_simbolo(), novo_estado])
                 novos_estados.insert(len(novos_estados), novo_estado)
                 dict_associacao[novo_estado] = [simbolos]
-                dict_simbolo_estado[simbolos.get_simbolo()] = [novo_estado]
+                dict_simbolo_estado[simbolos.get_simbolo()] = novo_estado
                 number_states += 1
                 ja_add.insert(0, simbolos.get_simbolo())
             elif simbolos.get_simbolo() != 'λ':
-                dict_associacao[dict_simbolo_estado[simbolos.get_simbolo()]].insert(0, simbolos)
+                dict_associacao[dict_simbolo_estado[simbolos.get_simbolo()]].append(simbolos)
             else:
                 estados_aceitacao.insert(len(estados_aceitacao), 'Q0')
         historico['Q0'] = lista_estados_atual.copy()
@@ -132,13 +132,14 @@ class ERoperations:
                             dict_af[estado_atual].insert(len(dict_af[estado_atual]), [simbolos.get_simbolo(), novo_estado])
                             novos_estados.insert(len(novos_estados), novo_estado)
                             dict_associacao[novo_estado] = [simbolos]
-                            dict_simbolo_estado[simbolos.get_simbolo()] = [novo_estado]
+                            dict_simbolo_estado[simbolos.get_simbolo()] = novo_estado
                             number_states += 1
                             ja_add.insert(0, simbolos.get_simbolo())
                         elif simbolos.get_simbolo() != 'λ':
                             dict_associacao[dict_simbolo_estado[simbolos.get_simbolo()]].insert(0, simbolos)
                         else:
                             estados_aceitacao.insert(len(estados_aceitacao), estado_atual)
+                    historico[estado_atual] = lista_estados_atual.copy()
                 else:
                     # Apagar referencias desse estado
                     for keys in dict_af.keys():
@@ -147,18 +148,16 @@ class ERoperations:
                                 if transicoes[1] == simbolos:
                                     transicoes[1] = excluido_por[simbolos]
 
-            # Add nova lista para comparacoes futuras
-            historico[estado_atual] = lista_estados_atual.copy()
-
         for s in lista_estados_atual:
             print(s.get_simbolo())
         print(estados_aceitacao)
+        print(estados_excluidos)
         return dict_af, estados_aceitacao, 'Q0'
 
 
     @staticmethod
     def criar_tabela(lista_elementos, elemento, direcao):
-        if elemento.get_eh_folha() or elemento.get_simbolo() == 'λ':
+        if (elemento.get_eh_folha() or elemento.get_simbolo() == 'λ') and elemento not in lista_elementos:
             lista_elementos.insert(len(lista_elementos), elemento)
             return
 
@@ -183,7 +182,6 @@ class ERoperations:
             if direcao == 'DESCER':
                 ERoperations.criar_tabela(lista_elementos, elemento.get_filho_esquerda(), 'DESCER')
             ERoperations.criar_tabela(lista_elementos, elemento.get_costura(), 'SUBIR')
-
 
     @staticmethod
     def criar_arvore(arvore, er_expression, pai, lado_pai):
@@ -251,6 +249,10 @@ class ERoperations:
                 contador_parenteses -= 1
                 if contador_parenteses == 0:
                     posicao_final = char
+            elif contador_parenteses == 0 and char + 1 < len(er_expression):
+                if er_expression[char] in ['*', '|', '.', '?']:
+                    posicao_inicial = -1
+                    break
 
         if posicao_inicial == -1 or posicao_final == -1:
             return er_expression, operador

@@ -24,7 +24,7 @@ class View:
     output_af = None
 
     # Constantes
-    CONST_ROW = 9
+    CONST_ROW = 10
     CONST_COLUMN = 5
 
     def __init__(self, controller):
