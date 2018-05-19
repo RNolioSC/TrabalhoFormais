@@ -620,3 +620,18 @@ class AFoperations:
             afnd[estado] = transicoes
         except KeyError:  # nao existe este estado na afnd
             afnd[estado] = [transicao]
+            
+    @staticmethod
+    def diferenca(afnd1, afnd2):
+        estados_afnd1 = []
+        for i in afnd1:
+            if i[0] == '*':  # tiramos o * do estado final
+                estados_afnd1.append(i[1:])
+            else:
+                estados_afnd1.append(i)
+
+        afnd2_renom = AFoperations.renomear_estados(afnd2, estados_afnd1)  # para nao termos mais de 1 estado com o msm nome
+
+        afnd2_complemento = AFoperations.complemento(afnd2_renom)
+        return AFoperations.intersecao(afnd1, afnd2_complemento)
+    
