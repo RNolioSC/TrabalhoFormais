@@ -4,11 +4,10 @@ import string
 class AFoperations:
 
     @staticmethod
-    def minimizacao(dict_af, estados_aceitacao):
+    def minimizacao(dict_af, estados_aceitacao, estado_inicial):
         dict_newaf = {}
         estados_mortos = []
         alfabeto = []
-        existe_erro = False
 
         # Pegar alfabeto
         for key in dict_af.keys():
@@ -20,7 +19,7 @@ class AFoperations:
         existe_erro = AFoperations.explicitar_estados_mortos(dict_af, alfabeto)
 
         # Eliminacao de estados inalcancaveis e descobrindo os mortos
-        AFoperations.kill_unreachable_discover_dead(dict_newaf, dict_af, alfabeto, estados_aceitacao, estados_mortos)
+        AFoperations.kill_unreachable_discover_dead(dict_newaf, dict_af, alfabeto, estado_inicial, estados_aceitacao, estados_mortos)
 
         # Eliminando os estados mortos
         AFoperations.kill_dead_states(estados_mortos, dict_newaf)
@@ -135,8 +134,8 @@ class AFoperations:
         return existe_erro
 
     @staticmethod
-    def kill_unreachable_discover_dead(dict_newaf, dict_af, alfabeto, estados_aceitacao, estados_mortos):
-        alc_keys = [list(dict_af.keys())[0]]
+    def kill_unreachable_discover_dead(dict_newaf, dict_af, alfabeto, estado_inicial, estados_aceitacao, estados_mortos):
+        alc_keys = [estado_inicial]
         ja_visitados = []
         estados_vivos = estados_aceitacao.copy()
         count_dead = 0
@@ -191,29 +190,6 @@ class AFoperations:
 
         return F, KF
 
-    # alc_keys = [list(dict_af.keys())[0]]
-    # ja_visitados = []
-    # while len(alc_keys) != 0:
-    #     key = alc_keys[0]
-    #     ja_visitados.insert(len(ja_visitados), key)
-    #     count_dead = 0
-    #
-    #     # Verificando se é alcançável
-    #     dict_newaf[key] = dict_af[key]
-    #     if key not in estados_aceitacao:
-    #         for transicoes in dict_newaf[key]:
-    #             if transicoes[1] not in ja_visitados and transicoes[1] != 'Erro':
-    #                 alc_keys.insert(len(alc_keys), transicoes[1])
-    #             # Verificando se é morto
-    #             if (transicoes[1] == key and transicoes[1] not in estados_aceitacao) or transicoes[1] == 'Erro':
-    #                 count_dead += 1
-    #
-    #     if count_dead == len(alfabeto):
-    #         estados_mortos.insert(len(estados_mortos), key)
-    #
-    #     del alc_keys[0]
-    
-    
     @staticmethod
     def afnd_to_afd(afnd):
         # suporta afnds com &
