@@ -343,8 +343,19 @@ class AFoperations:
         for estado in estados_existentes:
             novo_nome = estado
             if '.' in estado:  # este estado sera renomeado
-                novo_nome = nomes_possiveis_estados.pop(0)
-                nome_velho_novo[estado] = novo_nome
+
+                # definimos um nome pro novo estado inicial:
+                novo_nome = ''
+                if not nomes_possiveis_estados:  # se nao vazia
+                    novo_nome = nomes_possiveis_estados.pop(0)
+                    nome_velho_novo[estado] = novo_nome
+                numeroQ = 0  # caso usemos mais do q A..Z estados, usaremos Q0,Q1....
+                while novo_nome == '':  # usamos mais do q A..Z estados
+                    QEstado = 'Q' + str(numeroQ)
+                    numeroQ = numeroQ + 1
+                    if QEstado not in estados_existentes:  # este Qn ainda nao existe
+                        novo_nome = QEstado
+
             # else: este estado nao sera renomeado
 
             # marcamos os estados como finais se necesario
@@ -408,6 +419,12 @@ class AFoperations:
             if k not in estados_afnd1 and k not in estados_afnd2:
                 estado_inicial = k
                 break  # ja encontamos um nome pro nosso estado
+        numeroQ = 0  # caso usemos mais do q A..Z estados, usaremos Q0,Q1....
+        while estado_inicial == '':  # usamos mais do q A..Z estados
+            QEstado = 'Q' + str(numeroQ)
+            numeroQ = numeroQ + 1
+            if QEstado not in estados_afnd1 and QEstado not in estados_afnd2:  # este Qn ainda nao existe
+                estado_inicial = QEstado
 
         # criamos transicoes epsilon do novo estado inicial para os 2 antigos estados inicias dos 2 afnds
         nova_transicao = [['&', estados_afnd1[0]], ['&', estados_afnd2[0]]]
@@ -444,17 +461,28 @@ class AFoperations:
                 estados_possiveis.append(i)
 
         for estado in estados_existentes:
+
+            # definimos um novo nome para este estado:
+            novo_nome = ''
+            if not estados_possiveis:  # se nao estiver vazia
                 novo_nome = estados_possiveis.pop(0)
                 nome_velho_novo[estado] = novo_nome
+            else:
+                numeroQ = 0  # caso usemos mais do q A..Z estados, usaremos Q0,Q1....
+                while novo_nome == '':  # usamos mais do q A..Z estados
+                    QEstado = 'Q' + str(numeroQ)
+                    numeroQ = numeroQ + 1
+                    if QEstado not in estados_existentes and QEstado not in nomes_proibidos:  # este Qn ainda nao existe
+                        novo_nome = QEstado
 
-                # renomeia este estado (key) e o marca como final se necesario
-                if estado in estados_finais:
-                    temp = '*' + novo_nome
-                    af_sf[temp] = af_sf[estado]
-                    del af_sf[estado]
-                else:
-                    af_sf[novo_nome] = af_sf[estado]
-                    del af_sf[estado]
+            # renomeia este estado (key) e o marca como final se necesario
+            if estado in estados_finais:
+                temp = '*' + novo_nome
+                af_sf[temp] = af_sf[estado]
+                del af_sf[estado]
+            else:
+                af_sf[novo_nome] = af_sf[estado]
+                del af_sf[estado]
 
         # renomeamos os estados nas transicoes
         af_final = {}
@@ -522,5 +550,73 @@ class AFoperations:
         afnd1_compl = AFoperations.complemento(afnd1)
         afnd2_compl = AFoperations.complemento(afnd2_renom)
         afnd_result = AFoperations.uniao_afnds(afnd1_compl, afnd2_compl)
-        #return AFoperations.complemento(afnd_result)  # TODO: aqui da problema
-        return afnd_result  # TODO: somente para debug, remover depois. Usar o return acima
+
+        return AFoperations.complemento(afnd_result)
+
+    @staticmethod
+    def reverso(afnd):
+        # param: aceita qualquer afnd
+        afnd_s_epsilon = AFoperations.eliminar_epsilon_transicoes(afnd)
+        af_sf = AFoperations.deleta_asterisco_dicionario(afnd_s_epsilon)
+
+        estados = list(af_sf.keys())
+        antigo_estado_inicial = estados[0]
+
+        estados_finais = []
+        for i in estados:
+            if AFoperations.eh_final(afnd_s_epsilon, i):
+                estados_finais.append(i)
+
+        # definimos um nome pro novo estado inicial:
+        estados_todos = list(string.ascii_uppercase)
+        novo_estado_inicial = ''
+        for i in estados_todos:
+            if i not in estados:
+                novo_estado_inicial = i
+                break
+        numeroQ = 0  # caso usemos mais do q A..Z estados, usaremos Q0,Q1....
+        while novo_estado_inicial == '':  # usamos mais do q A..Z estados
+            QEstado = 'Q' + str(numeroQ)
+            numeroQ = numeroQ + 1
+            if QEstado not in estados:  # este Qn ainda nao existe
+                novo_estado_inicial = QEstado
+
+        # invertemos todas as transicoes:
+        af_temp = {}
+        while estados:
+            estado = estados.pop(0)
+            transicoes = af_sf[estado]
+            while transicoes:
+                transicao = transicoes.pop(0)
+                origem = estado
+                destino = transicao[1]
+                simbolo = transicao[0]
+                AFoperations.add_transicao_to_afnd(af_temp, destino, [simbolo, origem])
+
+        # adicionamos o novo_estado_inicial e as suas transicoes a afnd:
+        trans_est_inic = []
+        for i in estados_finais:
+            trans_est_inic.append(['&', i])
+        af_final = {novo_estado_inicial: trans_est_inic}
+
+        # adicionamos os demais estados:
+        for i in af_temp:
+            af_final[i] = af_temp[i]
+
+        # marcamos o antigo_estado_inicial como final:
+        transicoes_temp = af_final[antigo_estado_inicial]
+        del af_final[antigo_estado_inicial]
+        str_temp = '*' + antigo_estado_inicial
+        af_final[str_temp] = transicoes_temp
+        return af_final
+
+    @staticmethod
+    def add_transicao_to_afnd(afnd, estado, transicao):
+        # adiciona a transicao ao estado da afnd. modifica a propria afnd
+        try:
+            transicoes = afnd[estado]  # ja existe este estado na afnd
+            transicoes.append(transicao)
+            del afnd[estado]
+            afnd[estado] = transicoes
+        except KeyError:  # nao existe este estado na afnd
+            afnd[estado] = [transicao]
