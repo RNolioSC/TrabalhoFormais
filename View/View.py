@@ -113,8 +113,8 @@ class View:
         afm = Radiobutton(af, text="Minimização", variable="Operacao", value=5, tristatevalue=0, command=lambda: self.set_operacao(5, 0))
 
         oper = LabelFrame(self.top_frame_esq, text='5 Obter AF')
-        inter = Radiobutton(oper, text="Intersecção", variable="Operacao", value=6, tristatevalue=0, command=lambda: self.set_operacao(6, 2))
-        dif = Radiobutton(oper, text="Diferença", variable="Operacao", value=7, tristatevalue=0, command=lambda: self.set_operacao(7, 2))
+        inter = Radiobutton(oper, text="Intersecção", variable="Operacao", value=6, tristatevalue=0, command=lambda: self.set_operacao(6, 3))
+        dif = Radiobutton(oper, text="Diferença", variable="Operacao", value=7, tristatevalue=0, command=lambda: self.set_operacao(7, 3))
         rev = Radiobutton(oper, text="Reverso", variable="Operacao", value=8, tristatevalue=0, command=lambda: self.set_operacao(8, 3))
 
         operGR = LabelFrame(self.top_frame_esq, text='6 Obter GR')
@@ -170,12 +170,14 @@ class View:
                 if list + 1 < len(self.result[self.controller.get_estado_inicial()]):
                     if not self.result[self.controller.get_estado_inicial()][list + 1].istitle():
                         tmp += "|"
-            self.input.insert(END, tmp + '\n')
 
-            for estados_finais in self.aceitacao_reutilizavel:
+            estado_acc = self.aceitacao_reutilizavel if self.aceitacao_reutilizavel is not None else self.controller.get_estados_aceitacao()
+
+            for estados_finais in estado_acc:
                 indices = [i for i, elem in enumerate(self.result[self.controller.get_estado_inicial()]) if estados_finais in elem]
                 for index in indices:
                     tmp += '|' + self.result[self.controller.get_estado_inicial()][index - 1]
+            self.input.insert(END, tmp + '\n')
 
             for keys in self.result:
                 if keys != self.controller.get_estado_inicial():
@@ -186,7 +188,7 @@ class View:
                             if not self.result[keys][list + 1].istitle():
                                 tmp += "|"
 
-                    for estados_finais in self.aceitacao_reutilizavel:
+                    for estados_finais in estado_acc:
                         indices = [i for i, elem in enumerate(self.result[keys]) if estados_finais in elem]
                         for index in indices:
                             tmp += '|' + self.result[keys][index - 1]
@@ -214,28 +216,35 @@ class View:
     # Executar a operacao selecionada e exibe os resultados
     def exibir_resultados(self):
         self.controller.clean_all()
-        self.controller.set_dict(self.input, self.input_2, self.op)
-        self.result = self.controller.exec(self.operacao) # Faz a verificacao do tamanho e selecionar as saídas corretas
+        try:
+            self.controller.set_dict(self.input, self.input_2, self.op)
 
-        lista_operacao = self.controller.get_lista_operacoes()
-        self.lista_operacoes.delete(0, END)
-        for keys in lista_operacao.keys():
-            self.lista_operacoes.insert(END, keys)
-        self.lista_operacoes.bind("<Double-1>", self.exibir)
+            self.result = self.controller.exec(self.operacao) # Faz a verificacao do tamanho e selecionar as saídas corretas
 
-        if self.operacao == 3:
-            self.formata_resultado_gr()
-        elif self.operacao == 12:
-            msg = "A sentença pertence a linguagem" if self.result else "A sentença não pertence a linguagem"
-            messagebox.showinfo("Resultado do reconhecimento", msg)
-        elif self.operacao == 13:
+            lista_operacao = self.controller.get_lista_operacoes()
+            self.lista_operacoes.delete(0, END)
+            for keys in lista_operacao.keys():
+                self.lista_operacoes.insert(END, keys)
+            self.lista_operacoes.bind("<Double-1>", self.exibir)
+
             self.clear_matriz()
-            self.criar_output_gr()
-            for result in self.result:
-                self.output_gr.insert(END, result + '\n')
-                self.output_gr.grid(row=0, column=2, columnspan=3, sticky="ew")
-        else:
-            self.formata_resultado_af()
+            self.clear_text()
+            if self.operacao == 3:
+                self.formata_resultado_gr()
+            elif self.operacao == 12:
+                self.lista_operacoes.delete(0, END)
+                msg = "A sentença pertence a linguagem" if self.result else "A sentença não pertence a linguagem"
+                messagebox.showinfo("Resultado do reconhecimento", msg)
+            elif self.operacao == 13:
+                self.lista_operacoes.delete(0, END)
+                self.criar_output_gr()
+                for result in self.result:
+                    self.output_gr.insert(END, result + '\n')
+                    self.output_gr.grid(row=0, column=2, columnspan=3, sticky="ew")
+            else:
+                self.formata_resultado_af()
+        except SyntaxError as e:
+            messagebox.showinfo("Erro", e)
 
     # Criar tabela pra exibir AF
     def criar_tabela_af(self):
@@ -349,7 +358,10 @@ class View:
         Button(self.frame_dir, text="Reutilizar", command=self.reutilizar_af).grid(row=10, column=2, columnspan=3, pady=2)
 
     def exibir(self, event):
-        select = self.lista_operacoes.curselection()
-        self.result = self.controller.get_lista_operacoes()[self.lista_operacoes.get(select[0])][0]
-        self.aceitacao_reutilizavel = self.controller.get_lista_operacoes()[self.lista_operacoes.get(select[0])][1]
-        self.formata_resultado_af()
+        try:
+            select = self.lista_operacoes.curselection()
+            self.result = self.controller.get_lista_operacoes()[self.lista_operacoes.get(select[0])][0]
+            self.aceitacao_reutilizavel = self.controller.get_lista_operacoes()[self.lista_operacoes.get(select[0])][1]
+            self.formata_resultado_af()
+        except ValueError:
+            pass
