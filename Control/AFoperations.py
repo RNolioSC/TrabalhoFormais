@@ -155,6 +155,11 @@ class AFoperations:
                 estados_mortos.insert(0, alc_keys[0])
             del alc_keys[0]
 
+        keys = dict_newaf.keys()
+        for estado in estados_aceitacao:
+            if estado not in keys:
+                estados_aceitacao.remove(estado)
+
     @staticmethod
     def kill_dead_states(estados_mortos, dict_newaf):
         for keys in estados_mortos:
@@ -194,6 +199,9 @@ class AFoperations:
     def afnd_to_afd(afnd):
         # suporta afnds com &
         afnd_sem_epsilon = AFoperations.eliminar_epsilon_transicoes(afnd)
+
+        AFoperations.explicitar_estados_mortos(afnd_sem_epsilon, AFoperations.getAlfabeto(afnd))
+
         afd = {}
         afnd_sf = AFoperations.deleta_asterisco_dicionario(afnd_sem_epsilon)  # ignoramos se sao ou nao finais por ora
 
@@ -560,7 +568,7 @@ class AFoperations:
         af_sf = AFoperations.deleta_asterisco_dicionario(afnd_s_epsilon)
 
         estados = list(af_sf.keys())
-        antigo_estado_inicial = estados[0]
+        antigo_estado_inicial = estado_inicial
 
         estados_finais = []
         for i in estados:
