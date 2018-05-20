@@ -53,8 +53,9 @@ class Controller:
         elif operacao == 7:
             return self.diferenca()
         elif operacao == 8:
-            self.dict_af = self.gr_to_af(self.dict_af, self.estados_aceitacao)
+            self.dict_af = self.gr_to_af(self.dict_gr, self.estados_aceitacao)
             self.lista_operacoes["GR para AF"] = [self.dict_af, self.estados_aceitacao]
+
             return self.reverso(self.dict_af)
         elif operacao == 9:
             return self.uniao()
@@ -206,18 +207,61 @@ class Controller:
     # {'NaoTerminal': 'terminal', 'naoterminal', 'terminal', ....}
     def set_dict_gr(self, gr_text, op):
         gr = gr_text.get("1.0", END).splitlines()
-        self.set_estado_inicial(gr[0][0], op)
         gramatica = {}
+        existe_epsilon = False
+        ei_lado_direito = False
 
         for lines in gr:
-            gramatica[lines[0]] = []
-            contador = 3
+            contador = 0
+            tmp_p = ''
+
+            while lines[contador] != '-':
+                tmp_p += lines[contador]
+                contador += 1
+
+            if gr.index(lines) == 0:
+                self.set_estado_inicial(tmp_p, op)
+            gramatica[tmp_p] = []
+
+            contador += 1
             while contador < len(lines):
-                if lines[contador] is "|":
-                    contador += 1
+                if lines[contador] != ' ' and lines[contador] != '>':
+                    if lines[contador] is "|":
+                        contador += 1
+                    else:
+                        if lines[contador] == '&':
+                            existe_epsilon = True
+                        if lines[contador] == self.get_estado_inicial():
+                            ei_lado_direito = True
+                        if not (lines[contador].istitle()):
+                            if lines[contador - 1].islower():
+                                raise SyntaxError("Não é uma LR")
+                            try:
+                                int(lines[contador - 1])
+                                raise SyntaxError("Não é uma LR")
+                            except ValueError:
+                                pass
+                        tmp = ''
+                        if lines[contador].islower():
+                            gramatica[tmp_p].append(lines[contador])
+                            contador += 1
+                        else:
+                            try:
+                                int(lines[contador])
+                                gramatica[tmp_p].append(lines[contador])
+                                contador += 1
+                            except ValueError:
+                                while contador < len(lines) and lines[contador] != '|':
+                                    if not(lines[contador].islower()):
+                                        tmp += lines[contador]
+                                    contador += 1
+                                gramatica[tmp_p].append(tmp)
                 else:
-                    gramatica[lines[0]].append(lines[contador])
                     contador += 1
+
+        if existe_epsilon and ei_lado_direito:
+            raise SyntaxError("Não é uma LR")
+
         print(gramatica)
         return gramatica
 

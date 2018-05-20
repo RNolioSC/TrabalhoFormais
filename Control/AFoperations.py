@@ -84,7 +84,7 @@ class AFoperations:
             ja_visitados.insert(len(ja_visitados), key_1)
             for key_2 in estados_separados:
                 if key_2 not in ja_visitados:
-                    if not(AFoperations.compare(keys, estados, alfabeto, dict_newaf, F, KF)):
+                    if not(AFoperations.compare(key_1, key_2, alfabeto, dict_newaf, F, KF)):
                         new_conjunto[key_1].insert(len(new_conjunto[key_1]), key_2)
                         del new_conjunto[key_2]
 

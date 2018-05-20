@@ -5,7 +5,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/Control/AFoperations.py" afterPath="$PROJECT_DIR$/Control/AFoperations.py" />
       <change beforePath="$PROJECT_DIR$/Control/Controller.py" afterPath="$PROJECT_DIR$/Control/Controller.py" />
-      <change beforePath="$PROJECT_DIR$/Control/GRoperations.py" afterPath="$PROJECT_DIR$/Control/GRoperations.py" />
+      <change beforePath="$PROJECT_DIR$/Control/ERoperations.py" afterPath="$PROJECT_DIR$/Control/ERoperations.py" />
       <change beforePath="$PROJECT_DIR$/Expressao.txt" afterPath="$PROJECT_DIR$/Expressao.txt" />
       <change beforePath="$PROJECT_DIR$/View/View.py" afterPath="$PROJECT_DIR$/View/View.py" />
     </list>
@@ -18,11 +18,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Controller.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Controller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Control/Controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="417">
-              <caret line="80" column="103" lean-forward="false" selection-start-line="80" selection-start-column="103" selection-end-line="80" selection-end-column="103" />
+            <state relative-caret-position="2214">
+              <caret line="123" column="29" lean-forward="true" selection-start-line="123" selection-start-column="29" selection-end-line="123" selection-end-column="29" />
               <folding>
                 <element signature="e#0#36#0" expanded="true" />
               </folding>
@@ -30,11 +30,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="View.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ERoperations.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Control/ERoperations.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="396">
+              <caret line="22" column="0" lean-forward="false" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="View.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/View/View.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="568">
-              <caret line="195" column="26" lean-forward="false" selection-start-line="195" selection-start-column="26" selection-end-line="195" selection-end-column="26" />
+            <state relative-caret-position="3186">
+              <caret line="179" column="46" lean-forward="false" selection-start-line="179" selection-start-column="46" selection-end-line="179" selection-end-column="46" />
               <folding>
                 <element signature="e#0#30#0" expanded="true" />
               </folding>
@@ -54,10 +64,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>eh_final</find>
-      <find>afnd_to_afd</find>
-      <find>clea</find>
-      <find>conjuntosEquivalentes</find>
       <find>create_equivalent_sets</find>
       <find>AFoperations</find>
       <find>kill_unreachable_discover_dead</find>
@@ -69,11 +75,9 @@
       <find>renomear_estados_compostos</find>
       <find>clear_text</find>
       <find>concatenacao</find>
-      <find>set_dict_gr</find>
       <find>set_estado_inicial</find>
       <find>uniao_afnds</find>
       <find>gr_to_af</find>
-      <find>reverso</find>
       <find>self.clean_all()</find>
       <find>clean_all()</find>
       <find>clean_all</find>
@@ -84,6 +88,12 @@
       <find>carregar_expressao</find>
       <find>formata_resultado_af</find>
       <find>af_to_ger_reutilizado</find>
+      <find>gr</find>
+      <find>set_dict_gr</find>
+      <find>reverso</find>
+      <find>clear_matriz</find>
+      <find>criacao_tabela</find>
+      <find>reutilizar</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -107,20 +117,20 @@
         <option value="$PROJECT_DIR$/Control/Sentencas.py" />
         <option value="$PROJECT_DIR$/Control/SentenceOperations.py" />
         <option value="$PROJECT_DIR$/Control/Nodo.py" />
-        <option value="$PROJECT_DIR$/Control/ERoperations.py" />
-        <option value="$PROJECT_DIR$/Control/AFGRoperations.py" />
         <option value="$PROJECT_DIR$/View/newView.py" />
         <option value="$PROJECT_DIR$/Control/newController.py" />
         <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/Control/GRoperations.py" />
         <option value="$PROJECT_DIR$/Control/AFoperations.py" />
-        <option value="$PROJECT_DIR$/Control/Controller.py" />
+        <option value="$PROJECT_DIR$/Control/ERoperations.py" />
+        <option value="$PROJECT_DIR$/Control/AFGRoperations.py" />
         <option value="$PROJECT_DIR$/View/View.py" />
+        <option value="$PROJECT_DIR$/Control/Controller.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-7" />
+    <option name="x" value="800" />
     <option name="width" value="800" />
     <option name="height" value="860" />
   </component>
@@ -347,7 +357,14 @@
       <option name="project" value="LOCAL" />
       <updated>1526764781746</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Finalizando trabalho">
+      <created>1526828245351</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1526828245351</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TodoView" selected-index="5">
@@ -627,14 +644,6 @@
     <entry file="file://$PROJECT_DIR$/View.py" />
     <entry file="file://$PROJECT_DIR$/Control/Sentencas.py" />
     <entry file="file://$PROJECT_DIR$/setup.py" />
-    <entry file="file://$PROJECT_DIR$/Control/AFGRoperations.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="14" column="22" lean-forward="true" selection-start-line="14" selection-start-column="22" selection-end-line="14" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Control/Nodo.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -646,7 +655,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="234">
           <caret line="22" column="29" lean-forward="false" selection-start-line="22" selection-start-column="29" selection-end-line="22" selection-end-column="29" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -671,54 +679,59 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Control/ERoperations.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="272" column="36" lean-forward="false" selection-start-line="272" selection-start-column="36" selection-end-line="272" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Control/GRoperations.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="280">
           <caret line="32" column="31" lean-forward="true" selection-start-line="32" selection-start-column="31" selection-end-line="32" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Control/AFoperations.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="197" column="4" lean-forward="true" selection-start-line="197" selection-start-column="4" selection-end-line="197" selection-end-column="4" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/tkinter/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="167">
+        <state relative-caret-position="119">
           <caret line="1698" column="0" lean-forward="false" selection-start-line="1698" selection-start-column="0" selection-end-line="1698" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Control/AFoperations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="807">
+          <caret line="85" column="45" lean-forward="false" selection-start-line="85" selection-start-column="45" selection-end-line="85" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Control/AFGRoperations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="14" column="22" lean-forward="false" selection-start-line="14" selection-start-column="22" selection-end-line="14" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/View/View.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3186">
+          <caret line="179" column="46" lean-forward="false" selection-start-line="179" selection-start-column="46" selection-end-line="179" selection-end-column="46" />
+          <folding>
+            <element signature="e#0#30#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Control/ERoperations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="396">
+          <caret line="22" column="0" lean-forward="false" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Control/Controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="417">
-          <caret line="80" column="103" lean-forward="false" selection-start-line="80" selection-start-column="103" selection-end-line="80" selection-end-column="103" />
+        <state relative-caret-position="2214">
+          <caret line="123" column="29" lean-forward="true" selection-start-line="123" selection-start-column="29" selection-end-line="123" selection-end-column="29" />
           <folding>
             <element signature="e#0#36#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/View/View.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="568">
-          <caret line="195" column="26" lean-forward="false" selection-start-line="195" selection-start-column="26" selection-end-line="195" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#30#0" expanded="true" />
           </folding>
         </state>
       </provider>

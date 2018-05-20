@@ -19,18 +19,6 @@ class ERoperations:
         ERoperations.costurar_arvore(pilha, arvore[0])
 
         # Criar tabela
-        for nodo in arvore:
-            if nodo.get_pai() is not None:
-                if nodo.get_costura() is not None:
-                    print(nodo.get_simbolo() + " pai: " + nodo.get_pai().get_simbolo() + " lado: " + nodo.get_lado_pai() + " costurado com:" + nodo.get_costura().get_simbolo())
-                else:
-                    print(nodo.get_simbolo() + " pai: " + nodo.get_pai().get_simbolo() + " lado: " + nodo.get_lado_pai() + " não costurado")
-            else:
-                if nodo.get_costura() is not None:
-                    print(nodo.get_simbolo() + " raiz" + " costurado com:" + nodo.get_costura().get_simbolo())
-                else:
-                    print(nodo.get_simbolo() + " raiz")
-        # Criar tabela
         return ERoperations.criacao_tabela(arvore)
 
     @staticmethod
@@ -101,8 +89,8 @@ class ERoperations:
             else:
                 estados_aceitacao.insert(len(estados_aceitacao), 'Q0')
         historico['Q0'] = lista_estados_atual.copy()
-
-        while len(novos_estados) != 0:
+        count = 0
+        while len(novos_estados) != 0 and count < 4:
             ja_add = []
             estado_atual = novos_estados.pop(0)
             lista_estados_atual = []
@@ -148,10 +136,6 @@ class ERoperations:
                                 if transicoes[1] == simbolos:
                                     transicoes[1] = excluido_por[simbolos]
 
-        for s in lista_estados_atual:
-            print(s.get_simbolo())
-        print(estados_aceitacao)
-        print(estados_excluidos)
         return dict_af, estados_aceitacao, 'Q0'
 
 
