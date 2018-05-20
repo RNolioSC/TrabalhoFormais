@@ -45,6 +45,10 @@ class Controller:
         elif operacao == 5:
             self.dict_af = self.gr_to_af(self.dict_gr, self.estados_aceitacao)
             self.lista_operacoes["GR para AF"] = [self.dict_af, self.estados_aceitacao]
+            if self.eh_afnd(self.dict_af):
+                self.dict_af = self.determinizacao()
+                self.lista_operacoes["Determinização do AFND"] = [self.dict_af, self.estados_aceitacao]
+                self.explicitar_estados_finais(self.dict_af)
             afm = self.minimizacao()
             self.explicitar_estados_finais(afm)
             return afm
@@ -55,8 +59,8 @@ class Controller:
         elif operacao == 8:
             self.dict_af = self.gr_to_af(self.dict_gr, self.estados_aceitacao)
             self.lista_operacoes["GR para AF"] = [self.dict_af, self.estados_aceitacao]
-
-            return self.reverso(self.dict_af)
+            self.reverso(self.dict_af)
+            return self.dict_af
         elif operacao == 9:
             return self.uniao()
         elif operacao == 10:
@@ -122,7 +126,7 @@ class Controller:
         return AFoperations.minimizacao(self.dict_af, self.estados_aceitacao, self.estado_inicial)
 
     def determinizacao(self):
-        return AFoperations.afnd_to_afd(self.dict_af)
+        return AFoperations.afnd_to_afd(self.dict_af, self.estados_aceitacao)
     # -----------------------------------
 
     # Modulo reconhecimento e enumeracao
@@ -162,7 +166,7 @@ class Controller:
         return AFoperations.complemento(af)
 
     def reverso(self, afnd):
-        return AFoperations.reverso(afnd)
+        return AFoperations.reverso(afnd, self.estados_aceitacao, self.estado_inicial)
     # --------------------
 
     # Checagens

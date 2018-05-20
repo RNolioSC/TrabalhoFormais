@@ -195,7 +195,7 @@ class AFoperations:
 
         return F, KF
     
-      @staticmethod
+    @staticmethod
     def afnd_to_afd(afnd, estados_aceitacao):
         # suporta afnds com &
         AFoperations.eliminar_epsilon_transicoes(afnd)
@@ -313,7 +313,7 @@ class AFoperations:
             # podemos ter transicoes repetidas
             transicoes_sem_repet = AFoperations.remove_duplicatas_lista(transicoes)
             afnd_s_epsilon[estado] = transicoes_sem_repet
-            afnd = afnd_s_epsilon
+        afnd = afnd_s_epsilon
 
     @staticmethod
     def fechamento_epsilon(estado, afnd):
