@@ -196,14 +196,13 @@ class AFoperations:
         return F, KF
     
     @staticmethod
-    def afnd_to_afd(afnd, estados_aceitacao):
+    def afnd_to_afd(afnd, estados_aceitacao_afnd, afd):
         # suporta afnds com &
-        AFoperations.eliminar_epsilon_transicoes(afnd)
-        AFoperations.explicitar_estados_mortos(afnd, AFoperations.getAlfabeto(afnd))
-        afd = {}
+        afnd_se = AFoperations.eliminar_epsilon_transicoes(afnd)
+        AFoperations.explicitar_estados_mortos(afnd_se, AFoperations.getAlfabeto(afnd_se))
 
         # marcamos todos os estados como nao visitados
-        estados_a_visitar = list(afnd.keys())
+        estados_a_visitar = list(afnd_se.keys())
         estados_visitados = []
 
         # listas vazias retornam falso. Fazemos pop para controlar isto.
@@ -215,7 +214,7 @@ class AFoperations:
 
             # listas vazias retornam falso. Fazemos pop para controlar isto.
             while subestados_atuais:
-                ts_sn_afnd += afnd[subestados_atuais.pop(0)]  # copiamos todas as transicoes do estado n
+                ts_sn_afnd += afnd_se[subestados_atuais.pop(0)]  # copiamos todas as transicoes do estado n
 
             # pode ter transicoes duplicadas
             ts_sn_afnd = AFoperations.remove_duplicatas_lista(ts_sn_afnd)
@@ -247,16 +246,10 @@ class AFoperations:
             estados_visitados.append(estado_atual)
             # ja foi removido dos estados a visitar
             afd[estado_atual] = ts_sn_afd
-            AFoperations.marca_estados_finais(afd, estados_aceitacao)
-        return afd
+        estados_aceitacao_afd = estados_aceitacao_afnd
+        AFoperations.marca_estados_finais(afd, estados_aceitacao_afd)
+        return AFoperations.remove_duplicatas_lista(estados_aceitacao_afd)
 
-    @staticmethod
-    def remove_duplicatas_lista(lista):
-        lista_temp = []
-        for i in lista:
-            if i not in lista_temp:
-                lista_temp.append(i)
-        return lista_temp
 
     @staticmethod
     def marca_estados_finais(afd, estados_aceitacao):
@@ -287,7 +280,7 @@ class AFoperations:
             # podemos ter transicoes repetidas
             transicoes_sem_repet = AFoperations.remove_duplicatas_lista(transicoes)
             afnd_s_epsilon[estado] = transicoes_sem_repet
-        afnd = afnd_s_epsilon
+        return afnd_s_epsilon
 
     @staticmethod
     def fechamento_epsilon(estado, afnd):
