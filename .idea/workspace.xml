@@ -3,8 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="bbd2f96c-cb3b-499b-a6a0-76f64c77576f" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/Control/AFGRoperations.py" afterPath="$PROJECT_DIR$/Control/AFGRoperations.py" />
       <change beforePath="$PROJECT_DIR$/Control/AFoperations.py" afterPath="$PROJECT_DIR$/Control/AFoperations.py" />
       <change beforePath="$PROJECT_DIR$/Control/Controller.py" afterPath="$PROJECT_DIR$/Control/Controller.py" />
+      <change beforePath="$PROJECT_DIR$/Control/ERoperations.py" afterPath="$PROJECT_DIR$/Control/ERoperations.py" />
+      <change beforePath="$PROJECT_DIR$/Control/GRoperations.py" afterPath="$PROJECT_DIR$/Control/GRoperations.py" />
+      <change beforePath="$PROJECT_DIR$/Expressao.txt" afterPath="$PROJECT_DIR$/Expressao.txt" />
+      <change beforePath="$PROJECT_DIR$/View/View.py" afterPath="$PROJECT_DIR$/View/View.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -15,11 +20,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Controller.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Controller.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Control/Controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="227">
-              <caret line="62" column="31" lean-forward="true" selection-start-line="62" selection-start-column="31" selection-end-line="62" selection-end-column="31" />
+            <state relative-caret-position="1242">
+              <caret line="69" column="107" lean-forward="false" selection-start-line="69" selection-start-column="107" selection-end-line="69" selection-end-column="107" />
               <folding>
                 <element signature="e#0#36#0" expanded="true" />
               </folding>
@@ -27,34 +32,22 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AFoperations.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Control/AFoperations.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="504">
-              <caret line="50" column="25" lean-forward="true" selection-start-line="50" selection-start-column="25" selection-end-line="50" selection-end-column="25" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ERoperations.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Control/ERoperations.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="22" column="0" lean-forward="false" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="View.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="View.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/View/View.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="208">
-              <caret line="222" column="0" lean-forward="false" selection-start-line="222" selection-start-column="0" selection-end-line="222" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#30#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="378">
+              <caret line="364" column="39" lean-forward="true" selection-start-line="364" selection-start-column="39" selection-end-line="364" selection-end-column="39" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GRoperations.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Control/GRoperations.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="118">
+              <caret line="75" column="28" lean-forward="true" selection-start-line="75" selection-start-column="28" selection-end-line="75" selection-end-column="28" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -71,26 +64,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>create_equivalent_sets</find>
-      <find>AFoperations</find>
-      <find>kill_unreachable_discover_dead</find>
-      <find>afdminimo</find>
-      <find>print</find>
-      <find>minimizacao</find>
-      <find>marca_estados_finais</find>
-      <find>v</find>
-      <find>renomear_estados_compostos</find>
-      <find>clear_text</find>
-      <find>concatenacao</find>
-      <find>set_estado_inicial</find>
-      <find>uniao_afnds</find>
-      <find>gr_to_af</find>
-      <find>self.clean_all()</find>
-      <find>clean_all()</find>
-      <find>clean_all</find>
-      <find>set_dict_af</find>
-      <find>exibir</find>
-      <find>lista_operacoes</find>
       <find>af_to_gr</find>
       <find>carregar_expressao</find>
       <find>formata_resultado_af</find>
@@ -100,10 +73,31 @@
       <find>clear_matriz</find>
       <find>criacao_tabela</find>
       <find>reutilizar</find>
+      <find>reutil</find>
+      <find>set</find>
+      <find>set(</find>
+      <find>list</find>
+      <find>eh_afnd</find>
+      <find>inter</find>
+      <find>intersecao</find>
+      <find>estados_aceitacao</find>
+      <find>.keys</find>
+      <find>get</find>
+      <find>getK</find>
+      <find>getkeys</find>
+      <find>keys</find>
+      <find>complemento</find>
+      <find>diferenca</find>
+      <find>alfabeto</find>
+      <find>set_dict_er</find>
       <find>reverso</find>
+      <find>uniao</find>
+      <find>Q0</find>
+      <find>er_to_af</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
@@ -127,17 +121,16 @@
         <option value="$PROJECT_DIR$/View/newView.py" />
         <option value="$PROJECT_DIR$/Control/newController.py" />
         <option value="$PROJECT_DIR$/main.py" />
-        <option value="$PROJECT_DIR$/Control/GRoperations.py" />
-        <option value="$PROJECT_DIR$/Control/ERoperations.py" />
         <option value="$PROJECT_DIR$/Control/AFGRoperations.py" />
         <option value="$PROJECT_DIR$/Control/AFoperations.py" />
         <option value="$PROJECT_DIR$/View/View.py" />
+        <option value="$PROJECT_DIR$/Control/ERoperations.py" />
         <option value="$PROJECT_DIR$/Control/Controller.py" />
+        <option value="$PROJECT_DIR$/Control/GRoperations.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="800" />
     <option name="width" value="800" />
     <option name="height" value="860" />
   </component>
@@ -176,6 +169,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -202,13 +197,11 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="last_opened_file_path" value="$USER_HOME$/AppData/Local/GitHubDesktop/app-1.1.1/resources/app/git/cmd/git.exe" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -229,24 +222,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Python.main">
-    <configuration name="AFoperations" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Control" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="TrabalhoFormais" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Control/AFoperations.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-    </configuration>
     <configuration name="Controller" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -260,6 +235,24 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="TrabalhoFormais" />
       <option name="SCRIPT_NAME" value="C:\Users\Fabio\PycharmProjects\TrabalhoFormais\old\oldController.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="GRoperations" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Control" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="TrabalhoFormais" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Control/GRoperations.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -321,18 +314,18 @@
     </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.main" />
-      <item index="1" class="java.lang.String" itemvalue="Python.AFoperations" />
-      <item index="2" class="java.lang.String" itemvalue="Python.newView" />
-      <item index="3" class="java.lang.String" itemvalue="Python.newController" />
-      <item index="4" class="java.lang.String" itemvalue="Python.Controller" />
+      <item index="1" class="java.lang.String" itemvalue="Python.newView" />
+      <item index="2" class="java.lang.String" itemvalue="Python.newController" />
+      <item index="3" class="java.lang.String" itemvalue="Python.Controller" />
+      <item index="4" class="java.lang.String" itemvalue="Python.GRoperations" />
     </list>
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Python.main" />
-        <item index="1" class="java.lang.String" itemvalue="Python.Controller" />
-        <item index="2" class="java.lang.String" itemvalue="Python.newController" />
-        <item index="3" class="java.lang.String" itemvalue="Python.newView" />
-        <item index="4" class="java.lang.String" itemvalue="Python.AFoperations" />
+        <item index="1" class="java.lang.String" itemvalue="Python.GRoperations" />
+        <item index="2" class="java.lang.String" itemvalue="Python.Controller" />
+        <item index="3" class="java.lang.String" itemvalue="Python.newController" />
+        <item index="4" class="java.lang.String" itemvalue="Python.newView" />
       </list>
     </recent_temporary>
   </component>
@@ -378,10 +371,17 @@
       <option name="project" value="LOCAL" />
       <updated>1526850932655</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Finalizando trabalho 4">
+      <created>1526853085402</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1526853085402</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
-  <component name="TodoView" selected-index="5">
+  <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
       <is-autoscroll-to-source value="true" />
     </todo-panel>
@@ -395,9 +395,10 @@
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13375" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32984293" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2434555" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28795812" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.17539267" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.08638743" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -409,7 +410,6 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -421,7 +421,8 @@
     <MESSAGE value="Refatoração da View e Controller" />
     <MESSAGE value="Finalizando trabalho" />
     <MESSAGE value="Finalizando trabalho 4" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finalizando trabalho 4" />
+    <MESSAGE value="- Retirei algumas operações do AFoperations e coloquei em GRoperations.&#10;- Controller: Adequei a entrada de dados para executar os métodos novos.&#10;- ERoperations: Add number_states como param para evitar criar duas afs com os mesmos nomes de estados.&#10;- Aumentei o tamanho da tabela" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Retirei algumas operações do AFoperations e coloquei em GRoperations.&#10;- Controller: Adequei a entrada de dados para executar os métodos novos.&#10;- ERoperations: Add number_states como param para evitar criar duas afs com os mesmos nomes de estados.&#10;- Aumentei o tamanho da tabela" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -440,13 +441,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="6" column="10" lean-forward="false" selection-start-line="6" selection-start-column="10" selection-end-line="6" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Control/AFGRoperations.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
@@ -666,13 +660,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Control/SentenceOperations.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="22" column="29" lean-forward="false" selection-start-line="22" selection-start-column="29" selection-end-line="22" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
@@ -694,13 +681,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Control/GRoperations.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="32" column="31" lean-forward="true" selection-start-line="32" selection-start-column="31" selection-end-line="32" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/tkinter/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -710,44 +690,66 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Control/AFGRoperations.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36">
-          <caret line="14" column="22" lean-forward="false" selection-start-line="14" selection-start-column="22" selection-end-line="14" selection-end-column="22" />
+        <state relative-caret-position="161">
+          <caret line="37" column="34" lean-forward="false" selection-start-line="37" selection-start-column="29" selection-end-line="37" selection-end-column="34" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/View/View.py">
+    <entry file="file://$PROJECT_DIR$/.gitattributes">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
-          <caret line="222" column="0" lean-forward="false" selection-start-line="222" selection-start-column="0" selection-end-line="222" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#30#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Control/ERoperations.py">
+    <entry file="file://$PROJECT_DIR$/Control/SentenceOperations.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="22" column="0" lean-forward="false" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+        <state relative-caret-position="396">
+          <caret line="22" column="24" lean-forward="false" selection-start-line="22" selection-start-column="24" selection-end-line="22" selection-end-column="24" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Control/AFoperations.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="50" column="25" lean-forward="true" selection-start-line="50" selection-start-column="25" selection-end-line="50" selection-end-column="25" />
+        <state relative-caret-position="708">
+          <caret line="195" column="20" lean-forward="true" selection-start-line="195" selection-start-column="20" selection-end-line="195" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Control/GRoperations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="118">
+          <caret line="75" column="28" lean-forward="true" selection-start-line="75" selection-start-column="28" selection-end-line="75" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Control/ERoperations.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="956">
+          <caret line="89" column="17" lean-forward="true" selection-start-line="89" selection-start-column="17" selection-end-line="89" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Control/Controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="62" column="31" lean-forward="true" selection-start-line="62" selection-start-column="31" selection-end-line="62" selection-end-column="31" />
+        <state relative-caret-position="1242">
+          <caret line="69" column="107" lean-forward="false" selection-start-line="69" selection-start-column="107" selection-end-line="69" selection-end-column="107" />
           <folding>
             <element signature="e#0#36#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/View/View.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="364" column="39" lean-forward="true" selection-start-line="364" selection-start-column="39" selection-end-line="364" selection-end-column="39" />
+          <folding />
         </state>
       </provider>
     </entry>

@@ -17,7 +17,7 @@ class View:
     aceitacao_reutilizavel = None
 
     # Constantes
-    CONST_ROW = 10
+    CONST_ROW = 15
     CONST_COLUMN = 7
 
     def __init__(self, controller):
@@ -80,8 +80,8 @@ class View:
         self.frame_dir.grid_rowconfigure(1, weight=1)
         self.frame_dir.grid_columnconfigure(0, weight=1)
 
-        self.lista_operacoes = Listbox(self.frame_dir, width=40, height=14)
-        self.lista_operacoes.grid(row=11, column=0, columnspan=12, rowspan=12, sticky='wse')
+        self.lista_operacoes = Listbox(self.frame_dir, width=40, height=7)
+        self.lista_operacoes.grid(row=16, column=0, columnspan=12, rowspan=16, sticky='wse', pady=3)
 
         # Criar widgets frame do topo
         self.frame_top.grid_rowconfigure(1, weight=1)
@@ -115,10 +115,10 @@ class View:
         oper = LabelFrame(self.top_frame_esq, text='5 Obter AF')
         inter = Radiobutton(oper, text="Intersecção", variable="Operacao", value=6, tristatevalue=0, command=lambda: self.set_operacao(6, 3))
         dif = Radiobutton(oper, text="Diferença", variable="Operacao", value=7, tristatevalue=0, command=lambda: self.set_operacao(7, 3))
-        rev = Radiobutton(oper, text="Reverso", variable="Operacao", value=8, tristatevalue=0, command=lambda: self.set_operacao(8, 3))
+        rev = Radiobutton(oper, text="Reverso", variable="Operacao", value=8, tristatevalue=0, command=lambda: self.set_operacao(8, 1))
 
         operGR = LabelFrame(self.top_frame_esq, text='6 Obter GR')
-        uniao = Radiobutton(operGR, text="União", variable="Operacao", value=9, tristatevalue=0, command=lambda: self.set_operacao(9, 2))
+        uniao = Radiobutton(operGR, text="União", variable="Operacao", value=9, tristatevalue=0, command=lambda: self.set_operacao(9, 3))
         concat = Radiobutton(operGR, text="Concatenação", variable="Operacao", value=10, tristatevalue=0, command=lambda: self.set_operacao(10, 2))
         fech = Radiobutton(operGR, text="Fechamento", variable="Operacao", value=11, tristatevalue=0, command=lambda: self.set_operacao(11, 0))
 
@@ -161,17 +161,18 @@ class View:
         try:
             self.result = self.controller.af_to_ger_reutilizado(self.result)
             self.input.delete("1.0", END)
-
+            print(self.result)
             # Estado inicial
             tmp = self.controller.get_estado_inicial() + "->"
-            for list in range(len(self.result[self.controller.get_estado_inicial()])):
-                tmp += self.result[self.controller.get_estado_inicial()][list]
-                print(tmp)
-                if list + 1 < len(self.result[self.controller.get_estado_inicial()]):
-                    if not self.result[self.controller.get_estado_inicial()][list + 1].istitle():
+            for lista in range(len(self.result[self.controller.get_estado_inicial()])):
+                tmp += self.result[self.controller.get_estado_inicial()][lista]
+                if lista + 1 < len(self.result[self.controller.get_estado_inicial()]):
+                    symbol = self.result[self.controller.get_estado_inicial()][lista + 1]
+                    if not symbol.istitle() and symbol not in ['#', '$']:
                         tmp += "|"
 
             estado_acc = self.aceitacao_reutilizavel if self.aceitacao_reutilizavel is not None else self.controller.get_estados_aceitacao()
+            estado_acc = list(set(estado_acc))
 
             for estados_finais in estado_acc:
                 indices = [i for i, elem in enumerate(self.result[self.controller.get_estado_inicial()]) if estados_finais in elem]
@@ -182,10 +183,10 @@ class View:
             for keys in self.result:
                 if keys != self.controller.get_estado_inicial():
                     tmp = keys + "->"
-                    for list in range(len(self.result[keys])):
-                        tmp += self.result[keys][list]
-                        if list + 1 < len(self.result[keys]):
-                            if not self.result[keys][list + 1].istitle():
+                    for lista in range(len(self.result[keys])):
+                        tmp += self.result[keys][lista]
+                        if lista + 1 < len(self.result[keys]):
+                            if not self.result[keys][lista + 1].istitle() and self.result[keys][lista + 1] not in ['#', '$']:
                                 tmp += "|"
 
                     for estados_finais in estado_acc:
@@ -251,7 +252,7 @@ class View:
         rows = self.CONST_ROW
         columns = self.CONST_COLUMN
 
-        self.output_af = [[None for y in range(columns)] for x in range(rows)]
+        self.output_af = [[None for y in range(columns)] for x in range(rows)] # TODO TALVEZ EXCLUIR
 
         for row in range(rows):
             for column in range(columns):
@@ -259,13 +260,13 @@ class View:
                 entry.grid(row=row, column=column, padx=1, pady=1)
                 self.output_af[row][column] = entry
 
-        for column in range(columns):
+        for column in range(columns): # TODO LIST COMPREHESION
             self.frame_dir.grid_columnconfigure(column, weight=1)
 
         self.output_af[0][0].insert(0, "XXXX")
         self.output_af[0][0].config(state='disabled')
 
-        Button(self.frame_dir, text="Reutilizar", command=self.reutilizar_af).grid(row=10, column=2, columnspan=3, pady=2)
+        Button(self.frame_dir, text="Reutilizar", command=self.reutilizar_af).grid(row=15, column=2, columnspan=3, pady=2)
 
     def formata_resultado_af(self):
         self.clear_text()
@@ -276,7 +277,7 @@ class View:
         init_key = self.controller.get_estado_inicial()
         alfabeto = []
 
-        # Seta alfabeto
+        # Seta alfabeto TODO SÓ CONSIDERA LETRAS DO PRIMEIRO ESTADO
         for key in keys:
             for columns in range(len(self.result[key])):
                 if self.result[key][columns][0] not in alfabeto:
@@ -336,7 +337,6 @@ class View:
                 tmp += '|' + self.result[keys][index - 1]
         self.output_gr.insert(END, tmp + '\n')
         self.output_gr.grid(row=0, column=2, columnspan=3, sticky="ew")
-
 
     def clear_matriz(self):
         if not self.output_af:

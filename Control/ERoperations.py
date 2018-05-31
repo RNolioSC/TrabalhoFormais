@@ -4,7 +4,7 @@ from Control.Nodo import *
 class ERoperations:
 
     @staticmethod
-    def er_to_af(er_expression):
+    def er_to_af(er_expression, number_states):
         lambda_ = Nodo('λ', None, None, False, False)
         arvore = []
         pilha = [lambda_]
@@ -19,7 +19,7 @@ class ERoperations:
         ERoperations.costurar_arvore(pilha, arvore[0])
 
         # Criar tabela
-        return ERoperations.criacao_tabela(arvore)
+        return ERoperations.criacao_tabela(arvore, number_states)
 
     @staticmethod
     def costurar_arvore(pilha, elemento):
@@ -57,8 +57,7 @@ class ERoperations:
             nodo_raiz.set_filho_esquerda(nodo_esq)
 
     @staticmethod
-    def criacao_tabela(arvore):
-        number_states = 1
+    def criacao_tabela(arvore, number_states):
         state = 'Q'
 
         novos_estados = []
@@ -74,11 +73,13 @@ class ERoperations:
 
         # Estado inicial
         ERoperations.criar_tabela(lista_estados_atual, arvore[0], 'DESCER')
-        dict_af['Q0'] = []
+        number = str(number_states)
+        dict_af['Q'+number] = []
+        number_states += 1
         for simbolos in lista_estados_atual:
             if simbolos.get_simbolo() not in ja_add and simbolos.get_simbolo() != 'λ':
                 novo_estado = state + str(number_states)
-                dict_af['Q0'].insert(len(dict_af['Q0']), [simbolos.get_simbolo(), novo_estado])
+                dict_af['Q'+number].insert(len(dict_af['Q'+number]), [simbolos.get_simbolo(), novo_estado])
                 novos_estados.insert(len(novos_estados), novo_estado)
                 dict_associacao[novo_estado] = [simbolos]
                 dict_simbolo_estado[simbolos.get_simbolo()] = novo_estado
@@ -87,9 +88,10 @@ class ERoperations:
             elif simbolos.get_simbolo() != 'λ':
                 dict_associacao[dict_simbolo_estado[simbolos.get_simbolo()]].append(simbolos)
             else:
-                estados_aceitacao.insert(len(estados_aceitacao), 'Q0')
-        historico['Q0'] = lista_estados_atual.copy()
+                estados_aceitacao.insert(len(estados_aceitacao), 'Q'+number)
+        historico['Q'+number] = lista_estados_atual.copy()
         count = 0
+
         while len(novos_estados) != 0 and count < 4:
             ja_add = []
             estado_atual = novos_estados.pop(0)
@@ -136,7 +138,7 @@ class ERoperations:
                                 if transicoes[1] == simbolos:
                                     transicoes[1] = excluido_por[simbolos]
 
-        return dict_af, estados_aceitacao, 'Q0'
+        return dict_af, estados_aceitacao, 'Q'+number
 
 
     @staticmethod

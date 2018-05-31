@@ -5,6 +5,7 @@ from Control.GRoperations import *
 from Control.ERoperations import *
 from View.View import *
 
+# TODO ER_TO_AF tem quer gerar numeros diferentes
 
 class Controller:
     def __init__(self):
@@ -29,7 +30,8 @@ class Controller:
     # Define a operacao a ser executada
     def exec(self, operacao):
         if operacao == 1:
-            return self.er_to_af()
+            self.dict_af, self.estados_aceitacao, self.estado_inicial = self.er_to_af(self.er_expression, 0)
+            return self.dict_af
         elif operacao == 2:
             return self.gr_to_af(self.dict_gr, self.estados_aceitacao)
         elif operacao == 3:
@@ -45,24 +47,35 @@ class Controller:
         elif operacao == 5:
             self.dict_af = self.gr_to_af(self.dict_gr, self.estados_aceitacao)
             self.lista_operacoes["GR para AF"] = [self.dict_af, self.estados_aceitacao]
+
             if self.eh_afnd(self.dict_af):
                 self.dict_af = self.determinizacao()
                 self.lista_operacoes["Determinização do AFND"] = [self.dict_af, self.estados_aceitacao]
                 self.explicitar_estados_finais(self.dict_af)
+
             afm = self.minimizacao()
             self.explicitar_estados_finais(afm)
             return afm
         elif operacao == 6:
-            return self.intersecao()
+            self.dict_af, self.estados_aceitacao, self.estado_inicial = self.er_to_af(self.er_expression, 0)
+            self.dict_af_op, self.estados_aceitacao_op, self.estado_inicial_op = self.er_to_af(self.er_expression_op, 5)
+            self.dict_af, self.estados_aceitacao, self.estado_inicial = self.intersecao(self.dict_af, self.dict_af_op, self.estado_inicial, self.estado_inicial_op, self.estados_aceitacao, self.estados_aceitacao_op)
+            return self.dict_af
         elif operacao == 7:
-            return self.diferenca()
+            self.dict_af, self.estados_aceitacao, self.estado_inicial = self.er_to_af(self.er_expression, 0)
+            self.dict_af_op, self.estados_aceitacao_op, self.estado_inicial_op = self.er_to_af(self.er_expression_op, 5)
+            self.dict_af, self.estados_aceitacao, self.estado_inicial = self.diferenca(self.dict_af, self.dict_af_op,  self.estado_inicial, self.estado_inicial_op, self.estados_aceitacao, self.estados_aceitacao_op)
+            return self.dict_af
         elif operacao == 8:
-            self.dict_af = self.gr_to_af(self.dict_gr, self.estados_aceitacao)
-            self.lista_operacoes["GR para AF"] = [self.dict_af, self.estados_aceitacao]
-            self.reverso(self.dict_af)
+            self.dict_af, self.estados_aceitacao, self.estado_inicial = self.er_to_af(self.er_expression, 0)
+            self.lista_operacoes["ER para AF"] = [self.dict_af, self.estados_aceitacao]
+            self.dict_af, self.estados_aceitacao, self.estado_inicial = self.reverso(self.dict_af)
             return self.dict_af
         elif operacao == 9:
-            return self.uniao()
+            self.dict_af, self.estados_aceitacao, self.estado_inicial = self.er_to_af(self.er_expression, 0)
+            self.dict_af_op, self.estados_aceitacao_op, self.estado_inicial_op = self.er_to_af(self.er_expression_op, 5)
+            self.dict_af, self.estados_aceitacao, self.estado_inicial = self.uniao(self.dict_af, self.dict_af_op, self.estado_inicial, self.estado_inicial_op, self.estados_aceitacao, self.estados_aceitacao_op)
+            return self.dict_af
         elif operacao == 10:
             return self.concatenacao()
         elif operacao == 11:
@@ -142,8 +155,8 @@ class Controller:
         self.estado_inicial, self.estados_aceitacao = GRoperations.fechamento(self.dict_af, self.estado_inicial, self.estados_aceitacao)
         return self.dict_af
 
-    def uniao(self):
-        return AFoperations.uniao_afnds(self.dict_af, self.dict_af_op)
+    def uniao(self, af1, af2, ei1, ei2, ef1, ef2):
+        return GRoperations.uniao(af1, af2, ei1, ei2, ef1, ef2)
 
     def concatenacao(self):
         self.dict_af = self.gr_to_af(self.dict_gr, self.estados_aceitacao)
@@ -153,20 +166,20 @@ class Controller:
     # -----------------------
 
     # Modulo ER->AF
-    def er_to_af(self):
-        self.dict_af, self.estados_aceitacao, self.estado_inicial = ERoperations.er_to_af(self.er_expression)
-        return self.dict_af
+    def er_to_af(self, er_expression, number_states):
+        dict_af, estados_aceitacao, estado_inicial = ERoperations.er_to_af(er_expression, number_states)
+        return dict_af, estados_aceitacao, estado_inicial
     # -------------
 
     # Modulo de novos AF
-    def intersecao(self, af1, af2):
-        return AFoperations.intersecao(af1, af2)
+    def intersecao(self, af1, af2, ei1, ei2, ef1, ef2):
+        return GRoperations.intersecao(af1, af2, ei1, ei2, ef1, ef2)
 
-    def diferenca(self, af):
-        return AFoperations.complemento(af)
+    def diferenca(self, af1, af2, ei1, ei2, ef1, ef2):
+        return GRoperations.diferenca(af1, af2, ei1, ei2, ef1, ef2)
 
-    def reverso(self, afnd):
-        return AFoperations.reverso(afnd, self.estados_aceitacao, self.estado_inicial)
+    def reverso(self, afd):
+        return GRoperations.reverso(afd, self.estados_aceitacao, self.estado_inicial)
     # --------------------
 
     # Checagens
@@ -190,7 +203,7 @@ class Controller:
         if op == 0:
             self.dict_gr = self.set_dict_gr(input1, 1)
         elif op == 1:
-            self.set_dict_er(input1)
+            self.set_dict_er(input1, 1)
         elif op == 2:
             self.dict_gr = self.set_dict_gr(input1, 1)
             self.dict_gr_op = self.set_dict_gr(input2, 0)
@@ -198,8 +211,10 @@ class Controller:
             try:
                 input1.get("1.0", END).index("->")
                 self.dict_gr = self.set_dict_gr(input1, 1)
+                self.dict_gr_op = self.set_dict_gr(input2, 0)
             except ValueError:
-                self.set_dict_er(input1)
+                self.set_dict_er(input1, 1)
+                self.set_dict_er(input2, 0)
         elif op == 4:
             self.dict_gr = self.set_dict_gr(input1, 1)
             self.set_sentence(input2)
@@ -246,7 +261,7 @@ class Controller:
                             except ValueError:
                                 pass
                         tmp = ''
-                        if lines[contador].islower():
+                        if lines[contador].islower() or lines[contador] == '&':
                             gramatica[tmp_p].append(lines[contador])
                             contador += 1
                         else:
@@ -270,8 +285,11 @@ class Controller:
         return gramatica
 
     # Armazena a ER completa
-    def set_dict_er(self, gr_text):
-        self.er_expression = gr_text.get("1.0", END)
+    def set_dict_er(self, gr_text, op):
+        if op:
+            self.er_expression = gr_text.get("1.0", END)
+        else:
+            self.er_expression_op = gr_text.get("1.0", END)
 
     def set_estado_inicial(self, estado_inicial, op):
         if op:
@@ -303,29 +321,3 @@ class Controller:
         self.estados_aceitacao = []
         self.lista_operacoes = {}
     # --------
-
-
-    # # Pega o af em forma de matriz e transforma na forma
-    # # {'EstadoAtual': ['simbolo','ProxEstado'],...}
-    # def set_dict_af(self, af_matrix):
-    #     self.clean_all()
-    #     key = af_matrix[1][0].get()  # Estado inicial
-    #     self.set_estado_inicial(key[1:] if '*' in key else key, 1)
-    #
-    #     for rows in range(len(af_matrix)):
-    #         if af_matrix[rows][0].get() == "":
-    #             break
-    #
-    #         if rows is not 0:
-    #             key = af_matrix[rows][0].get()
-    #
-    #             if '*' in key:
-    #                 self.estados_aceitacao.append(key[1:])
-    #
-    #             self.dict_af[key] = []
-    #             for columns in range(len(af_matrix[0])):
-    #                 if columns is not 0 and af_matrix[0][columns].get() is not "":
-    #                     if af_matrix[rows][columns].get() != "":
-    #                         self.dict_af[key].insert(columns, [af_matrix[0][columns].get(), af_matrix[rows][columns].get()])
-    #
-    #     print(self.dict_af)

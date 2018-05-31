@@ -16,7 +16,7 @@ class AFGR:
 
         # Adicionando estado final
         dict_swap['F'] = []
-        estados_aceitacao.insert(len(estados_aceitacao), 'F')
+        estados_aceitacao.append('F')
 
         for keys in dict_gr:
             dict_swap[keys] = []
@@ -33,5 +33,16 @@ class AFGR:
                 else:
                     dict_swap[keys].insert(len(dict_swap[keys]), [dict_gr[keys][contador], 'F'])
                     contador += 1
+
+        # Descobrindo se o inicial é final TODO ARRUMAR ISSO DEPOIS
+        for keys in dict_swap.keys():
+            for transicoes in dict_swap[keys]:
+                if transicoes[1] == 'S':
+                    for keysF in dict_swap.keys():
+                        for transicoesF in dict_swap[keysF]:
+                            if transicoesF[1] == 'F':
+                                if transicoes[0] == transicoesF[0]:
+                                    estados_aceitacao.append('S')
+
 
         return dict_swap
